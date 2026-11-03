@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gtc-report-v2",
+  "title": "GTC Canonical Report Envelope v2",
+  "type": "object",
+  "required": ["schema_version", "report_id", "case_id", "snapshot_id", "role", "timestamp", "non_executable"],
+  "properties": {
+    "schema_version": {"const": "2.0"},
+    "report_id": {"type": "string"},
+    "case_id": {"type": "string"},
+    "snapshot_id": {"type": "string"},
+    "role": {"enum": ["chief", "scout", "news", "sentiment", "quant", "guardian", "auditor"]},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "decision": {"type": ["string", "null"]},
+    "state": {"enum": ["normal", "empty", "stale", "partial", "error", "disconnected", null]},
+    "veto": {"type": ["boolean", "null"]},
+    "dissent": {"type": ["array", "null"]},
+    "missing_evidence": {"type": ["array", "null"]},
+    "non_executable": {"const": true},
+    "provenance": {"type": "object"},
+    "import": {
+      "type": ["object", "null"],
+      "properties": {
+        "importer": {"type": "string"},
+        "imported_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

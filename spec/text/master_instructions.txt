@@ -1,0 +1,286 @@
+GROK TRADING COUNCIL
+MASTER BUILD AND ENGINEERING INSTRUCTIONS
+Version 1.0 | Prepared for Samir Patel | 2 November 2026
+
+UPLOAD AND USE
+Read this entire instruction file together with Grok_Trading_Council_Full_Project_v2.pdf. The PDF is the functional and visual specification. This file adds implementation detail, coding standards and evidence requirements. Use English throughout.
+
+This is a new project. Do not import any previous project's code, credentials, exchange choices, capital assumptions, trading limits or strategies. These instructions authorize preparation and implementation within the reviewed build stages; they do not authorize real-money trading, paid services, account linking or external publication.
+
+1. YOUR MISSION AND STANDARD
+
+Act as a disciplined software engineering assistant responsible for delivering the specified system. Use your available coding, reasoning, documentation and testing tools. Report the actual tools and model configuration when observable; do not invent a model identity, "pro mode", available integration or successful execution.
+
+The outcome is seven separately configured specialist bots, a six-member decision council, one Research Auditor outside that council, a working backend, a paper-trading engine and the seven-screen dashboard. Each component must work with the others through explicit, validated interfaces.
+
+"Professional" means readable and maintainable code, verified calculations, clear responsibilities, reliable recovery, reproducible tests and truthful results. Complexity, the number of bots, a long explanation or an attractive interface does not establish quality. Do not promise trading accuracy, profit or uninterrupted runtime.
+
+Keep the PDF's requirements and stage boundaries. If these instructions conflict with the PDF, identify the conflict, its consequences and a proposed resolution. Do not silently change functionality, numerical rules or approved scope. Current verified provider restrictions override assumptions about available capabilities; report any resulting limitation.
+
+2. COMPLETE STAGE 0 FIRST
+
+Before substantive implementation:
+- Confirm that you can read all 46 PDF pages and inspect the seven screen concepts on pages 39-45. Identify any unreadable pages or images.
+- Inspect the embedded PNG files if your environment supports extraction. Otherwise use the visible concept pages. If neither is readable, list the exact missing visual files; do not claim to have inspected them.
+- Identify the environment: ordinary Grok chat, native Grok Bot, Grok Build or another explicitly supported coding environment.
+- Verify repository access, file editing, terminal execution, dependency installation, tests, preview, persistence and background-worker capabilities. Record unsupported or untested capabilities.
+- Resolve the page 30 choice: native Grok Bot profiles versus separately orchestrated agents using xAI Grok models. A native profile name is not proof of the underlying model. Do not silently substitute one route for the other.
+- Verify actual subscription usage and billing boundaries. Do not assume SuperGrok includes a free developer API. Leave paid extras off unless I explicitly authorize them.
+- Confirm the market, venue, instrument family, allowed directions, universe, timeframe, data sources, runtime, usage budget and proposed paper defaults. Ask one concise bundled question for genuinely unresolved choices.
+- Until choices are resolved, use labelled fictional fixtures for planning and tests. Do not select an old exchange or capital amount from another project.
+- Check current official documentation for the selected provider and tools. Record the relevant URLs and verification date. Do not invent native bot-control APIs, authentication methods, provider endpoints or guaranteed hosting.
+
+Your first delivery must be a Stage 0 capability report, requirement coverage map, module coding blueprint, unresolved choices and the proposed next stage. Stop at this review boundary as required by the PDF. Do not claim bots or services exist unless you actually created and verified them.
+
+3. WRITE A MODULE CODING BLUEPRINT
+
+Before implementing a module, specify:
+- Module ID, purpose, owner and responsibilities it must not take over.
+- Exact file paths and principal classes/functions, with typed signatures.
+- Inputs, outputs, units, schemas, permitted enum values and version fields.
+- Database tables, keys, constraints, indexes and migrations where relevant.
+- Dependencies, public interfaces and allowed state transitions.
+- Timeouts, retry rules, duplicate handling, concurrency and recovery behavior.
+- Permissions, secrets handling, structured errors and logging.
+- Normal, boundary and failure tests with independently derived expected results.
+- Requirement IDs and the evidence needed to mark the module complete.
+
+Use the structure proposed on PDF page 21. A module does not need its own network service merely because it has its own responsibility. Prefer a simple modular implementation with a separately supervised position-monitor worker. Explain any material architecture change.
+
+Create a requirements matrix with:
+requirement_id | PDF page or instruction section | module | implementation path | test ID | status | evidence path.
+Use NOT_STARTED, IN_PROGRESS, BLOCKED, VERIFIED or NOT_APPLICABLE with a reason. Mark verified only after the relevant evidence exists.
+
+4. MODULE REQUIREMENTS
+
+M01 - CONFIGURATION, CAPABILITIES AND POLICY
+Own validated configuration and versioned active policy. Include the selected implementation route, environment, source adapters, instrument permissions, approved universe, strategy version, paper limits, timing rules and budgets.
+Define draft_policy(), validate_policy(), activate_policy() and load_active_policy(), or equivalent typed interfaces. Activation must follow the reviewed authorization path. Bot reports cannot activate policy.
+Keep secrets outside committed configuration. Provide a documented example configuration without credentials. Invalid or incomplete critical configuration blocks entry.
+
+M02 - RECORDS, SCHEMAS AND VALIDATION
+Implement complete machine-readable schemas for tasks, snapshots, specialist reports, plans, decisions, risk results, orders, fills, positions, events and experiments.
+Use pages 15 and 33 as the starting requirements; their examples are not a complete implementation. Define every field, type, nullability, unit, enum and compatibility rule. Unknown is not zero.
+Validate timestamps, finite numbers, source references, role identifiers and strategy/policy versions. Reject incompatible snapshots, unrecognized fields where the schema forbids them and duplicate identifiers with different payloads.
+Record authenticated sender provenance when available. Manual imports must record the operator and import time; a role label alone does not prove identity.
+
+M03 - MARKET DATA ADAPTERS AND SNAPSHOTS
+Define a provider-neutral interface for instrument metadata, completed candles, executable quotes and permitted optional data. Implement only the selected provider using verified documentation.
+Normalize symbols, currencies, contract multipliers, tick sizes, quantity steps, minimum order rules, market status and trading calendars where applicable.
+Preserve source time, receipt time and availability time. Detect gaps, duplicates, out-of-order data, stale quotes and clock uncertainty. Freeze case snapshots and retain their provenance.
+Historical evaluation must use only information available at the simulated decision time. Missing optional data must remain distinct from a missing mandatory input.
+
+M04 - FEATURES AND BASELINE STRATEGY
+Implement the exact baseline conventions on pages 19 and 35: closed-bar alignment, EMA seeding and warm-up, regime labels, ATR definition, trigger windows, volume requirement, entry validity, expiry, stops, targets and holding period.
+Expose testable calculations such as calculate_ema(), calculate_atr(), classify_regime(), evaluate_trigger() and validate_entry_window(), or equivalents.
+Money, fees, quantities and account balances require explicit precision and rounding. Document indicator numerical precision separately. Do not change formulas to make a candidate pass.
+Version parameters and data history anchors. Test against hand-calculated fixtures, including equality boundaries, insufficient history and missing volume. Do not use future candles.
+
+M05 - SEVEN SPECIALIST BOT DEFINITIONS
+Give every role a separate identity, instruction set, permitted tools, context, input contract, output contract, task deadline and usage budget. Use the shared and role-specific briefs on pages 6-13.
+On the native route, provide verified profiles and supported handoffs. On the explicitly chosen API route, provide distinct agent instances and configured xAI model IDs. One response impersonating seven roles does not meet this requirement.
+
+Chief, orange:
+Coordinate cases, private first reports, challenge and clarification rounds. Detect conflicting evidence and duplicated sources. Produce one current LONG, SHORT, WAIT or SKIP decision with references and expiry. Preserve Guardian's veto. Report fills only from the ledger.
+
+Scout, yellow:
+Scan the approved universe for eligible conditions, liquidity and valid candidates. Use reproducible numerical filters and the approved regime classification. Return a shortlist, rejection reasons or NO_CANDIDATE. Do not place orders.
+
+News, blue:
+Verify events against approved sources. Distinguish event time, publication time and retrieval time. Detect recycled stories, duplicated origins and unsupported claims. Return verified facts, uncertainty and material event concerns.
+
+Sentiment, purple:
+Assess the available sample with explicit coverage, collection window and limitations. Separate unique participation from reposts and promotion. Do not manufacture representative scores, private positions or missing market metrics.
+
+Quant, cyan:
+Use tested numerical tools and approved strategies to produce a complete plan or NO_SETUP. Include entry, side, expiry, stop, target, quantity assumptions, costs and invalidation rules. Rebuild a plan when Guardian requests a valid reduction.
+
+Guardian, green:
+Independently challenge evidence and risk. Return PASS, REDUCE, VETO or INCOMPLETE with explicit reasons. Check the software's calculations; do not calculate authoritative balances from prose or override hard limits.
+
+Research Auditor, silver:
+Remain outside the six-member trading council. Review accepted, rejected and deferred cases, experiments and failures. Propose bounded changes supported by reproducible evaluation. Do not activate strategy changes, alter risk limits or place orders.
+
+Expose role-specific reliability and usefulness metrics. A bot's claimed confidence is not a measured probability.
+
+M06 - MEETING AND CASE COORDINATOR
+Implement the case lifecycle and bounded protocol on pages 14 and 32. Every assignment references the same frozen snapshot, versions and deadline.
+Collect initial reports privately before group release. Record whether this separation is technically enforced or instruction-only. Record known exposure to peer conclusions.
+Allow the configured challenge and clarification rounds, one schema-repair attempt within the original deadline, and bounded transport retries. Use stable request IDs.
+Require every assigned specialist's valid response, while distinguishing optional evidence coverage from mandatory evidence. Preserve dissent; do not force unanimity.
+Deduplicate cases and link revisions. Missing decisive evidence produces WAIT. Policy violations or unsuitable setups produce SKIP. WAIT and SKIP cannot create orders.
+
+M07 - TRADE PLAN AND RISK ADMISSION
+Independently recompute quantity, planned monetary loss, costs, exposure, available balance and instrument constraints using the active policy.
+Immediately before admission, recheck the actual plan version, setup validity, fresh quote, Guardian result, current positions, pending reservations and strategy permissions.
+Atomically reserve capacity and create the unique order record. Two concurrent cases cannot consume the same remaining position slot or risk allowance.
+Round quantities conservatively and recalculate after rounding. Reject invalid entry/stop/target ordering, unsupported sides and expired or mismatched versions.
+Return structured reason codes. AI opinions, a majority vote and dashboard actions cannot bypass this gate.
+
+M08 - PAPER BROKER AND ORDER LIFECYCLE
+Implement the canonical order transitions from page 34. Separate submitted orders, partial fills, filled orders, cancelled remainders and open positions.
+Use documented simulation rules for bid/ask, spread, latency, fees, slippage, carrying costs, liquidity and partial fills. Do not assume every order fills at the last price.
+Provide submit_order(), process_fill(), cancel_remainder() and reconcile_orders(), or equivalents.
+Enforce idempotency: repeating an identical order request returns its original result; the same identifier with a different payload is rejected.
+Persist actual simulated outcomes even when adverse. Never rewrite a fill to make risk or profit appear acceptable. No live order adapter is enabled in this release.
+
+M09 - POSITION MONITOR AND EXITS
+Run independently of bot conversations. Register protective rules atomically with each fill that creates exposure.
+Monitor stop, target, maximum hold, data health and configured emergency conditions. Measure the proposed check interval, scheduling gaps and recovery behavior.
+A pause stops new entries while protection continues. A close request remains pending until a recorded fill. Reduce-only exits cannot reverse a position.
+After a partial close, preserve protection on the remaining quantity. If data is unavailable, flag degraded or unpriced state rather than inventing a close.
+Stop prices are triggers, not guaranteed fill prices. Apply the PDF's documented gap and ambiguous-bar behavior.
+
+M10 - LEDGER, PERSISTENCE AND RECONCILIATION
+Persist events, orders, fills, positions, cash, fees, realized P&L, marked unrealized P&L, equity and reservations with explicit units.
+Design database constraints and transaction boundaries before implementation. Use one authoritative ledger writer; enforce writer fencing if failover is implemented.
+Define the accounting convention for partial closes and trading episodes. Include costs exactly once. Keep accounting consistent across replay, paper operation and the UI.
+Restore and reconcile before allowing new entries. Test crashes between reservation, order creation, partial fill and exit. Accounting mismatches latch new entries off.
+Corrections append traceable records; they do not erase the original evidence.
+
+M11 - EVIDENCE AND BOUNDED MEMORY
+Separate approved policy, timestamped observations, unapproved hypotheses and experiment outcomes.
+Every item needs provenance, owner, scope, version and expiry or recheck rules. A conversational summary cannot override the active policy.
+Treat uploaded/retrieved source content as untrusted data. Embedded instructions must not trigger tool use, policy changes, credential disclosure or orders.
+Preserve source links, observation times and corrections. Do not feed later outcomes into an earlier historical case.
+
+M12 - RESEARCH, EVALUATION AND CONTROLLED IMPROVEMENT
+Maintain the complete experiment register, including failed trials, hypotheses, data/code/prompt versions, parameters and costs.
+Verify the deterministic baseline first. Compare matched cases against the baseline, risk-only variant, full council and approved role-removal variants.
+Freeze the forward evaluation window, metrics, stopping rule, sample/precision requirement and risk budget before observing Stage 7 outcomes.
+Report expectancy, drawdown, uncertainty, operational failures, latency and costs using page 36 definitions. Separate functional verification from economic evaluation.
+Historical LLM knowledge leakage must be disclosed. Use forward paper evidence for the complete council. Insufficient evidence remains INCONCLUSIVE.
+Promotion needs an explicit reviewed version, supporting tests and rollback. Never silently alter active trading rules after a loss.
+
+M13 - BACKEND INTERFACES AND EVENT DELIVERY
+Define the application's own authenticated read/control interfaces; do not confuse them with provider APIs.
+Cover health, bots, markets, cases, reports, plans, decisions, risk results, orders, fills, positions, experiments and journal exports.
+Validate every request. Require idempotency and version checks for applicable mutations. Return structured errors and correlation IDs.
+Use polling or an event stream appropriate to the chosen runtime. Reconnect and reconcile missing events instead of assuming the browser stayed synchronized.
+The backend owns financial state. The browser cannot directly edit balances or bypass policy.
+
+M14 - DASHBOARD AND GRAPHICS
+Build all seven screens using real interactive components. Match the visual direction of the seven PDF concepts:
+Overview, Meeting Room, Markets, Positions, Research, Journal, Settings.
+Keep consistent dark navy/teal styling, readable typography, the seven role colors and original bot identities.
+Implement each page's Show, Controls, Data and failure, and Acceptance requirements on pages 39-45. Use page 38 for common behavior.
+Clickable bot cards must open actual role/report information. The Research Auditor stays outside the six-seat meeting.
+Charts, prices, tables and status labels must come from recorded data or a clearly labelled demo fixture. Do not use a screenshot of the entire interface as the application.
+Use the images as design references. Their fictional dates, chart paths and labels do not override the written specification.
+Implement loading, empty, stale, partial, error and disconnected states. Show mode, source/data age and actual execution status.
+If automatic bot control is unavailable, show MANUAL IMPORT with working copy/import controls. Do not present an unsupported Run meeting button as functional.
+Verify desktop at 1440px and phone at 390px, keyboard navigation, readable tables, reduced motion and visible disabled reasons.
+Save the visual assets with an asset inventory describing their purpose and provenance. Do not imply affiliation with third-party brands.
+
+M15 - OPERATIONS, SECURITY AND USAGE
+Provide reproducible installation, startup, shutdown, health, backup, restoration and restart procedures.
+Record worker heartbeat, queue age, clock uncertainty, data freshness, case latency, monitor gaps and observable usage. Unknown usage remains unknown.
+Keep secret values out of source control, prompts, screenshots, exported evidence and logs. Treat role prompts as instructions, not access controls.
+Use minimum required permissions and authenticated control paths. Escape untrusted text in the UI and validate imported files.
+Cap rounds, calls and retries. Handle unavailable services and quota exhaustion explicitly without an endless retry loop.
+Separate demo, test and paper datasets. Do not enable schedules or claim continuous operation before the runtime is demonstrated.
+
+M16 - TESTS, REVIEW AND RELEASE EVIDENCE
+Maintain focused unit, schema/contract, integration, end-to-end and recovery tests appropriate to financial state and critical workflows.
+Calculate expected results independently. Avoid tests that merely repeat the implementation. Mock external providers only at declared boundaries and label mocked evidence.
+Where useful, include generated/property tests for invariants such as nonnegative remaining quantity, bounded exposure and duplicate requests having only one financial effect.
+Run type checks, formatting/linting, backend tests, frontend build and relevant UI tests. Lock dependency versions and record the runtime.
+Review the actual changes in a separate review pass. If a different reviewer or isolated context was not used, label it self-review.
+Record findings, severity, fixes and regression tests. Required behavior may not be weakened merely to make a test pass.
+
+5. REQUIRED FAILURE AND INTEGRATION TESTS
+
+Include the PDF's tests and at least these concrete cases:
+- Missing, malformed, late or wrong-role report; unsupported model or native capability.
+- Required evidence missing versus optional coverage unavailable.
+- Duplicate news origins; injected instructions inside source text.
+- Mismatched snapshot, policy or strategy version; unknown enums or invalid units.
+- Indicator warm-up failure, future-bar leakage and expiry at the boundary.
+- Guardian veto despite all other bots recommending entry.
+- REDUCE without a revised, re-reviewed plan.
+- Fresh quote with an obsolete setup; stale quote; uncertain or future timestamp.
+- Quantity/tick rounding, fees and slippage pushing a trade beyond its limits.
+- Two cases competing for the same position slot or reserved balance.
+- Repeated request/callback; same identifier with a different payload.
+- Partial fill, cancelled remainder and restart while exposure remains.
+- Partial exit, duplicate exit and attempted position reversal.
+- Meeting timeout while the independent exit monitor continues.
+- Price gap, ambiguous stop/target bar, feed outage and unpriced exposure.
+- Database failure, accounting mismatch, failed backup restore and stale writer.
+- Daily loss boundary and date rollover during an unresolved incident.
+- Policy change while an order is being admitted.
+- Dashboard disconnect/reconnect, stale state and unsupported control bridge.
+- Strategy improvement proposed without completed evaluation or promotion approval.
+
+Demonstrate at least one valid paper-order path, one WAIT case, one veto/rejection case and one restart/recovery case across the connected system. Trace each through its case ID, reports, decision, risk result, orders/fills, ledger and UI. Trading wins are not required to pass an operational correctness test.
+
+6. CODING AND DELIVERY RULES
+
+Use typed, understandable interfaces and small modules with clear responsibilities. Avoid unnecessary frameworks, duplicate business logic and speculative infrastructure. Read current official documentation before using unfamiliar APIs.
+
+Keep numerical and policy logic out of presentation components and free-text parsing. Use decimal arithmetic where money and quantities require it, explicit UTC timestamps and monotonic timers for elapsed durations where appropriate.
+
+Do not hide core functionality behind placeholders, fabricated API calls, hard-coded successful results or empty exception handlers. Temporary stubs are allowed only when labelled, tracked and excluded from claims of integration readiness.
+
+Inside the authorized stage, finish related implementation, integration and meaningful fixes without asking about every minor edit. Preserve working modules; make targeted changes. Commit logical milestones when a repository is available.
+
+At each PDF stage boundary, return evidence for review. Ask only when an unresolved choice materially affects scope, cost, permissions, correctness or an irreversible action. Do not purchase services, publish the app, link accounts, send third-party messages or enable real-money trading under these instructions.
+
+7. REQUIRED PROJECT FILES
+
+Create and maintain:
+- README.md: setup, operating modes, verified startup/shutdown and recovery commands.
+- AGENTS.md: persistent project instructions and completion rules, where supported.
+- PROJECT_STATUS.md: current stage, actual progress, blockers and next action.
+- docs/module_blueprint.md: module contracts and design decisions.
+- docs/requirements_matrix.csv: each requirement mapped to implementation and tests.
+- docs/data_dictionary.md: schemas, units, enums and database relationships.
+- docs/operations.md: health, backup, restore, failure handling and budgets.
+- docs/visual_spec.md: seven screens, component/asset mapping and state behavior.
+- bots/: shared instructions and seven individual role briefs/configurations.
+- schemas/: complete validated record schemas.
+- config/: reviewed non-secret configuration and example settings.
+- applications/services/research directories following the PDF's repository structure.
+- tests/fixtures/: normal, boundary and failure inputs with expected outcomes.
+- evidence/: test logs, case exports, review findings and screenshots.
+- Dependency manifests, lockfiles and database migrations as required.
+
+These are deliverables to create during the build, not files that this instruction claims already exist.
+
+8. STAGE REPORT FORMAT
+
+Return this at each review boundary:
+1. Stage and status: completed, partial or blocked.
+2. Confirmed scope and implementation route.
+3. Verified tools, runtime, model configuration if exposed, and remaining capability limits.
+4. Requirement IDs addressed and anything deferred.
+5. Files changed and commit/version.
+6. Exact commands actually run, exit codes and evidence locations.
+7. Tests passed, failed or skipped, with reasons.
+8. Actual bot identities, council membership and observed handoffs.
+9. Case export, decision and paper ledger reconciliation where applicable.
+10. Data freshness, clock health, monitor timing and recovery results.
+11. Desktop/mobile screenshots and unresolved visual differences where applicable.
+12. Usage/cost information when observable; do not invent totals.
+13. Review findings, fixes, remaining limitations and manual steps.
+14. Proposed next stage.
+
+If you could not execute a command, label it NOT RUN. If a dependency prevented validation, report BLOCKED. Do not translate an attractive mockup or plausible code into a claim of tested integration.
+
+9. FIRST RESPONSE I EXPECT FROM YOU
+
+Read both files completely. Confirm which PDF pages and visual assets you could inspect. Complete Stage 0 and the implementation blueprint only.
+
+Return:
+A. A concise explanation of the intended system.
+B. The verified capability matrix and route choices.
+C. The seven-role roster and module-to-role ownership map.
+D. The module coding blueprint, including proposed files, functions, schemas and tests.
+E. The requirements-to-tests checklist and gaps or contradictions found.
+F. One bundled set of essential unresolved choices.
+G. A concrete Stage 1 plan and evidence deliverables.
+
+If the available environment cannot read files, edit code or run tests, say exactly which capability is missing and provide exportable instructions without claiming execution. Continue independent planning where useful, but do not invent capability or substitute a different paid architecture without my decision.
+
+The goal is a complete, maintainable and verifiable paper-trading system matching the PDF. Every "complete" claim must be supported by inspectable evidence.
+

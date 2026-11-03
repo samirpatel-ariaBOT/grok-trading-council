@@ -1,0 +1,66 @@
+{
+  "archive_sha256": "68313dea2e4e301cf39b6e4d992c1e8984dc4a3e415575243f1cbdc0a13ab55f",
+  "files": [
+    {
+      "original_path": "test_quant_v7.py",
+      "retained_path": "evidence/upstream_v7/test_quant_v7.py.txt",
+      "sha256": "f6a93431b9891d2918129914500b61438a8aebf011fa2ceb11019485d75b57dd"
+    },
+    {
+      "original_path": "quant_baseline_v7.py",
+      "retained_path": "evidence/upstream_v7/quant_baseline_v7.py.txt",
+      "sha256": "a6a51ccc37b77cf5734563cecf3606077dfb9ded3e7b64ddc9ebb47cefe2ee8e"
+    },
+    {
+      "original_path": "STATUS.md",
+      "retained_path": "evidence/upstream_v7/STATUS.md.txt",
+      "sha256": "ec65836bec766324c560a67820631cfbba54a4cbb7333f5a7c19cc9019a939ca"
+    },
+    {
+      "original_path": "MANIFEST.json",
+      "retained_path": "evidence/upstream_v7/MANIFEST.json.txt",
+      "sha256": "0f31e99d5936d50e618dc941a665708e5be12696f0178527711498f4c24d6eda"
+    },
+    {
+      "original_path": "quant_baseline_v4.py",
+      "retained_path": "evidence/upstream_v7/quant_baseline_v4.py.txt",
+      "sha256": "41a40c406c0ccda3867f937ba91b4e9814d16fb88f54046ac7ce3676b2d29fa4"
+    },
+    {
+      "original_path": "test_quant_v4.py",
+      "retained_path": "evidence/upstream_v7/test_quant_v4.py.txt",
+      "sha256": "ebacbdf27ffd58cfb5ecd800eff2092e56b6bdf392016b1287e3cb58867887cc"
+    },
+    {
+      "original_path": "mexc_scanner_v3.py",
+      "retained_path": "evidence/upstream_v7/mexc_scanner_v3.py.txt",
+      "sha256": "15a7c7e06b6cec43e8e22b3ca34d52405ee085f46a871d703d841f8aebba23a1"
+    },
+    {
+      "original_path": "test_scanner_v3.py",
+      "retained_path": "evidence/upstream_v7/test_scanner_v3.py.txt",
+      "sha256": "e08f74a4d701bb115c029b7b9cbf296e437cda99f495ece04f0bb7957b9d9c81"
+    },
+    {
+      "original_path": "gtc_report_schema_v2.json",
+      "retained_path": "evidence/upstream_v7/gtc_report_schema_v2.json.txt",
+      "sha256": "0cf46b88259117b276e2f2f5c1578590bf9f8a090cc7926d001355ac45aa783a"
+    },
+    {
+      "original_path": "STAGE0_CAPABILITY_REPORT.md",
+      "retained_path": "evidence/upstream_v7/STAGE0_CAPABILITY_REPORT.md.txt",
+      "sha256": "eca665284048f86fdddfe70d14abf9ea0c8a5facd83ce04d4fe25a13bb665aa3"
+    },
+    {
+      "original_path": "docs/WINDOWS_D_DRIVE_ROOT.md",
+      "retained_path": "evidence/upstream_v7/docs/WINDOWS_D_DRIVE_ROOT.md.txt",
+      "sha256": "eb9b40cba6474db2ef07d838e170ea7730ff12ded451cfcda4185869a53ffbb2"
+    },
+    {
+      "original_path": "docs/GTC_BOT_ROLE_BRIEFS.md",
+      "retained_path": "evidence/upstream_v7/docs/GTC_BOT_ROLE_BRIEFS.md.txt",
+      "sha256": "46a6aad25f78fb3622cf5949065832f49b0843dde596172f28cb26a6a7214ec9"
+    }
+  ],
+  "runtime_imports": false
+}

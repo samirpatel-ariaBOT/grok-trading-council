@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Regression tests for quant_baseline_v4 addressing the six Codex failures."""
+import pandas as pd
+import numpy as np
+import math
+from quant_baseline_v4 import check_regime, check_breakout, build_plan
+
+def test_gap():
+    idx = pd.date_range("2026-01-01", periods=601, freq="h")
+    idx = idx.delete(300)  # create a gap
+    s = pd.Series(range(600), index=idx[:600])
+    r = check_regime(s)
+    assert r["state"] == "UNKNOWN_DATA" and "gap" in r.get("reason", ""), r
+    print("PASS gap rejection")
+
+def test_direction_mismatch():
+    regime = {"state": "UPTREND"}
+    brk = {"status": "BREAKOUT", "side": "short"}
+    r = build_plan(regime, brk, 1.0, 100, 100)
+    assert r["status"] == "NO_SETUP" and r["reason"] == "direction_mismatch"
+    print("PASS direction mismatch")
+
+def test_nan_trigger():
+    regime = {"state": "UPTREND"}
+    brk = {"status": "BREAKOUT", "side": "long"}
+    r = build_plan(regime, brk, 1.0, float("nan"), 100)
+    assert r["status"] == "NO_SETUP"
+    print("PASS NaN trigger")
+
+def test_coarse_tick():
+    regime = {"state": "UPTREND"}
+    brk = {"status": "BREAKOUT", "side": "long"}
+    r = build_plan(regime, brk, 0.001, 100.0, 100.0, tick=1.0)
+    assert r["status"] == "NO_SETUP" and "rounded" in r.get("reason", "")
+    print("PASS coarse tick rejection")
+
+def test_inf_ohlcv():
+    df = pd.DataFrame({
+        "high": [110]*20 + [float("inf")],
+        "low": [90]*21,
+        "close": [100]*21,
+        "volume": [100]*21
+    })
+    r = check_breakout(df, side="long")
+    assert r["status"] == "NO_SETUP" and "nonfinite" in r.get("reason", "")
+    print("PASS infinite OHLCV rejection")
+
+if __name__ == "__main__":
+    test_gap()
+    test_direction_mismatch()
+    test_nan_trigger()
+    test_coarse_tick()
+    test_inf_ohlcv()
+    print("ALL v4 TESTS PASSED")
+
+def test_sma_seed_used():
+    s = pd.Series([1,2,3]*200)
+    r = check_regime(s)
+    # Just confirm it runs and returns a known state (not crash)
+    assert r["state"] in ("UPTREND", "DOWNTREND", "NO_TREND", "UNKNOWN_DATA")
+    print("PASS SMA-seed path runs")
+
+def test_invalid_tick():
+    regime = {"state": "UPTREND"}
+    brk = {"status": "BREAKOUT", "side": "long"}
+    for bad in [0, float("nan"), float("inf"), True, -1, "0.01"]:
+        r = build_plan(regime, brk, 1.0, 100, 100, tick=bad)
+        assert r["status"] == "NO_SETUP" and r["reason"] == "invalid_tick", (bad, r)
+    print("PASS invalid tick rejection")

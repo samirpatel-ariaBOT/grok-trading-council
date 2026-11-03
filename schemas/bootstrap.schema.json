@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gtc:bootstrap:0.1",
+  "title": "Setup-only configuration (not a trading policy)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "phase",
+    "mode",
+    "exchange",
+    "market",
+    "universe",
+    "data_mode",
+    "execution_enabled",
+    "network_enabled",
+    "paid_usage_enabled",
+    "pending_choices"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "bootstrap-0.1"
+    },
+    "project_id": {
+      "type": "string",
+      "const": "gtc-fresh-20261102"
+    },
+    "phase": {
+      "type": "string",
+      "const": "SETUP"
+    },
+    "mode": {
+      "type": "string",
+      "const": "PAPER"
+    },
+    "exchange": {
+      "type": "string",
+      "const": "MEXC"
+    },
+    "market": {
+      "type": "string",
+      "const": "CRYPTO_FUTURES"
+    },
+    "universe": {
+      "type": "string",
+      "const": "ALL_ELIGIBLE_CONTRACTS"
+    },
+    "data_mode": {
+      "type": "string",
+      "const": "FIXTURE_ONLY"
+    },
+    "execution_enabled": {
+      "type": "boolean",
+      "const": false
+    },
+    "network_enabled": {
+      "type": "boolean",
+      "const": false
+    },
+    "paid_usage_enabled": {
+      "type": "boolean",
+      "const": false
+    },
+    "pending_choices": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_route",
+        "contract_family_and_settlement",
+        "allowed_directions",
+        "timeframes",
+        "paper_risk_policy",
+        "runtime_host",
+        "usage_budget"
+      ],
+      "properties": {
+        "agent_route": {
+          "type": "null"
+        },
+        "contract_family_and_settlement": {
+          "type": "null"
+        },
+        "allowed_directions": {
+          "type": "null"
+        },
+        "timeframes": {
+          "type": "null"
+        },
+        "paper_risk_policy": {
+          "type": "null"
+        },
+        "runtime_host": {
+          "type": "null"
+        },
+        "usage_budget": {
+          "type": "null"
+        }
+      }
+    }
+  }
+}
+

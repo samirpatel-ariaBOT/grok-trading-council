@@ -1,0 +1,9 @@
+Stage 0 remains IN_PROGRESS.
+
+Quant baseline v7: SMA-seeded EMA is now used inside check_regime (no pandas .ewm).
+Tick size is validated before arithmetic; invalid values (bool, non-numeric, non-finite, zero, negative) return NO_SETUP.
+All returned plan prices are finite, positive, and correctly ordered when a plan is produced.
+
+Report/import contract and bot evidence remain incomplete until verified.
+D: drive requirement preserved. Native bots selected. Paper/demo only.
+GitHub coordination issue: not yet confirmed with actual URL.

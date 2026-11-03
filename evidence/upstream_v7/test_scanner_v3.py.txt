@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Regression tests for mexc_scanner_v3 covering prior failures + new cases."""
+import sys, time, math
+sys.path.insert(0, "/tmp")
+from mexc_scanner_v3 import scan
+
+now = time.time()
+ts = int(now * 1000)
+
+def base_row(**kw):
+    r = {"symbol": "BTC_USDT", "lastPrice": 100.0, "bid1": 99.9, "ask1": 100.1,
+         "amount24": 200000, "volume24": 1000, "timestamp": ts}
+    r.update(kw)
+    return r
+
+def ok_env(data):
+    return {"success": True, "code": 0, "data": data}
+
+def test(name, raw, http=200, expect_status="ok", expect_eligible=None, expect_reason=None):
+    r = scan(raw, http_status=http, received_at=now)
+    assert r["status"] == expect_status, f"{name}: status {r['status']}"
+    if expect_eligible is not None:
+        assert r["counts"]["eligible"] == expect_eligible, f"{name}: eligible {r['counts']['eligible']}"
+    if expect_reason:
+        assert any(x.get("reason") == expect_reason for x in r.get("rejections", [])), f"{name}: missing {expect_reason}"
+    print(f"PASS {name}")
+
+test("valid", ok_env([base_row()]), expect_eligible=1)
+test("crossed", ok_env([base_row(bid1=101, ask1=100)]), expect_eligible=0, expect_reason="crossed_book")
+test("missing_ts", ok_env([base_row(timestamp=None)]), expect_eligible=0, expect_reason="missing_or_invalid_timestamp")
+test("future_ts", ok_env([base_row(timestamp=int((now+200)*1000))]), expect_eligible=0, expect_reason="future_timestamp")
+test("malformed_row", ok_env(["not_a_dict"]), expect_eligible=0, expect_reason="malformed_row")
+test("invalid_symbol", ok_env([base_row(symbol=None)]), expect_eligible=0, expect_reason="invalid_symbol")
+test("negative_vol", ok_env([base_row(volume24=-1)]), expect_eligible=0, expect_reason="negative_volume24")
+test("nan_vol", ok_env([base_row(volume24=float("nan"))]), expect_eligible=0, expect_reason="nonfinite_volume24")
+test("string_false", {"success": "false", "code": 0, "data": [base_row()]}, expect_status="api_error")
+test("missing_data", {"success": True, "code": 0}, expect_status="malformed_envelope")
+test("duplicate", ok_env([base_row(), base_row()]), expect_eligible=1, expect_reason="duplicate_symbol")
+test("http_503", {}, http=503, expect_status="http_error")
+print("ALL v3 TESTS PASSED")

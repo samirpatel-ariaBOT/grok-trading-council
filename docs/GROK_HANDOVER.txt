@@ -1,0 +1,161 @@
+HISTORICAL STARTER DOCUMENT — superseded for the current implementation by README.md, PROJECT_STATUS.md and docs/integrated_blueprint.md. Retained for traceability.
+
+GROK TRADING COUNCIL — FRESH SETUP AND JOINT ENGINEERING HANDOVER
+Version 0.1 | 2 November 2026 | Prepared for Samir Patel
+Documentation revision: UI ownership 1 (bootstrap code unchanged)
+Companion: Grok_Trading_Council_Fresh_Start_v0_1.zip
+
+OWNER'S DIRECTION
+This is a completely new project, from local environment through GitHub.
+Use only this project's four PDFs (46 pages), master instructions, supplied visual
+concepts and subsequent decisions. Do not import any earlier project's code,
+repository/history, credentials, databases, strategies, risk settings or learned state.
+
+Codex is coordinating technical work and review. You are an engineering partner:
+actively give your own advice, challenge assumptions, and explain better alternatives.
+Codex is expected to listen and revise its view when your evidence is stronger.
+Record discussions through GitHub.
+
+INTERFACE OWNERSHIP — UPDATED OWNER DIRECTION
+Codex will lead building and editing the seven-screen interface from its side.
+Grok will lead the bots and backend after the agreed stage/blueprint review.
+You must still give independent UI advice, challenge design assumptions and help
+with integration. Codex must listen and respond to your recommendations.
+Read docs/FRONTEND_HANDOFF.md and open task 004 with Codex as the documented owner.
+Provide versioned data/control contracts and realistic success/error examples.
+Keep the UI in editable source under apps/dashboard/, not only in a Grok preview
+or a generated screenshot. Coordinate any edits to this area through its issue/PR.
+Do not overwrite Codex's UI work or create a competing dashboard without agreement.
+Codex can use labelled fixtures while the backend is pending; the final dashboard
+must connect to real backend state and must not simulate successful control actions.
+This allocation does not mean that an interface has already been implemented.
+
+CURRENT SCOPE
+MEXC crypto futures; discover and scan all eligible contracts. Seven distinct
+specialist bots, six-member council and separate Research Auditor. Seven dashboard
+screens matching the specification. Paper/demo development only.
+
+Contract settlement/family, allowed directions, native versus API agent route,
+timeframes, risk policy, runtime host and usage budget still need explicit resolution.
+USDT perpetuals, LONG/SHORT and the PDF's numerical defaults are proposals, not
+active settings. Never use earlier projects' defaults to fill these decisions.
+The subscription screenshot showed SuperGrok Heavy; verify actual entitlement.
+Do not assume a free developer API or guaranteed native model identity.
+
+WHAT CODEX HAS ALREADY DONE
+Created a fresh bootstrap with setup-only Python configuration validation, isolated
+environment creation, 19 bootstrap tests, source index, collaboration protocol and
+draft GitHub tasks. Tests passed on Codex's Linux/Python 3.12.14 environment.
+This does not mean they passed in your environment or on Samir's computer.
+No remote repository, native bot profiles, exchange connection, paper engine,
+ledger, dashboard, automatic cross-assistant trigger or live trading was created.
+
+YOUR FIRST WORK — PROCEED WITH THE AUTHORIZED SETUP
+1. Inspect your current tools and authenticated GitHub identity. Verify actual
+   repository creation/read/write capability. Do not claim success from a tool name.
+   Keep any credential-entry step in the provider's secure authorization flow.
+
+2. Create a NEW PRIVATE repository in the owner's intended account.
+   The GitHub account observed by Codex is samirpatel-ariaBOT; verify your side.
+   Suggested name: grok-trading-council.
+   If this name already exists, do not repurpose it. Choose a new unused name and
+   report the choice. Initialize a README and fresh history.
+   Do not use any earlier project's template, code, environment or Git history.
+   If your tools cannot create it, give Samir the exact manual step at
+   https://github.com/new and continue source review in a fresh directory.
+   Repository setup and project-specific GitHub issues/PR discussions are requested;
+   paid services, public deployment, private exchange connections and real trades
+   remain outside the authorization.
+
+3. Extract the attached starter ZIP into a NEW temporary workspace.
+   Read README.md, AGENTS.md, PROJECT_STATUS.md, docs/DECISIONS.md and
+   docs/COLLABORATION_PROTOCOL.md. Verify BUNDLE_MANIFEST.json using:
+       python -I scripts/verify_bundle.py
+   Use an available Python 3.12+ interpreter; report the actual version.
+   Verify before editing. The manifest checks the original handover only.
+
+4. Clone the new repository into another new workspace, create grok/bootstrap,
+   and import the starter contents at the repository root without an extra nested
+   project folder. Do not commit .venv, credentials or runtime state.
+
+5. Add the exact five CURRENT-PROJECT specification files already uploaded to this
+   Grok conversation under spec/originals/. See spec/SOURCE_INDEX.json for names.
+   They are not duplicated in the small starter ZIP.
+   Inspect all 46 pages and seven screen concepts, preserve PDF/image quality,
+   extract the seven original visual assets if supported, and record actual file
+   hashes, page coverage, asset filenames, provenance and anything unreadable.
+   Never silently replace a missing source with a summary.
+
+6. Run the setup in your new project:
+       python -I scripts/create_environment.py
+   This creates an isolated .venv and executes the bootstrap checks and tests.
+   It does not install third-party dependencies or enable trading.
+   If the environment already exists, do not overwrite it; use the documented
+   recheck commands only after confirming it belongs to this new project.
+   Report exact commands, exit codes and evidence. Do not mark skipped work passed.
+
+7. Commit the imported source and your actual setup evidence to grok/bootstrap.
+   Open a pull request. Create issues from docs/initial_github_tasks/.
+   Label copied draft issue text as prepared by Codex and imported by Grok.
+   Do not impersonate a separately authenticated Codex GitHub account.
+   If both assistants use the same owner account, use labelled review comments
+   and actual test evidence; do not manufacture independent GitHub approvals.
+
+YOUR INDEPENDENT ADVICE — REQUIRED
+Give your own recommendations, including:
+- What is unnecessarily complex or missing in this starter and the specification?
+- What would you change in the architecture, and what is your simpler alternative?
+- Which actual native-bot capabilities and limitations can you demonstrate?
+- How can the all-contract MEXC scanner remain efficient without calling every LLM
+  for every symbol, and what eligibility and data-quality gates are needed?
+- How should bot isolation, evidence provenance, deterministic risk admission,
+  independent exits and recovery work?
+- What costs, latency, operational limitations and failure tests matter most?
+- Which assumptions from Codex do you disagree with, and what evidence supports you?
+
+Put this in the architecture issue. Codex will read and respond once access works.
+Do not write a fictional conversation claiming Codex has already replied.
+
+STAGE 0 REPAIR AND NEXT WORK
+Keep overall Stage 0 IN_PROGRESS until supported by evidence.
+Expand docs/requirements_matrix.csv with atomic requirements for all M01-M16,
+seven roles, seven screens, MEXC universe/data requirements, integration and the
+complete master/PDF failure-test list. The earlier 28-row summary was incomplete.
+Complete docs/module_blueprint.md with typed interfaces, states, units, persistence,
+timeouts/retries, recovery and independent expected test outcomes per module.
+Keep setup-only success separate from complete policy/data/broker/UI readiness.
+Use labelled fixtures for work that does not depend on unresolved decisions.
+
+Record confirmed choices separately from proposals. Bundle only genuinely unresolved
+scope, cost, permissions or correctness questions. Do not repeatedly ask about
+minor reversible setup work already requested.
+Do not create paid API agents, activate financial settings, start a collector or
+schedule a runtime while these dependencies remain unresolved.
+Before implementing a substantive module, agree its blueprint and task ownership
+with Codex through GitHub. You can critique and improve Codex's contracts.
+
+HOW THE DISCUSSION WORKS
+Use issues for decisions and work, PRs for code, and docs/DECISIONS.md for outcomes.
+Each handoff states Actor, exact commit, requirement IDs, evidence and questions.
+Both parties must answer substantive objections; evidence can change either view.
+After two unresolved rounds, define the discriminating test or leave the choice
+open. Bring material owner decisions to Samir rather than inventing agreement.
+
+This bootstrap does not automatically wake either assistant when GitHub changes.
+For now, report the issue/PR links so Samir can prompt each assistant to continue.
+An automatic bridge requires separately verified access, trigger delivery,
+deduplication, bounded retries and usage limits. Never claim it already exists.
+Grok Bot's scheduled routines do not establish a fast independent trading monitor.
+
+RETURN THIS NEXT
+- Exact new private repository URL, authenticated owner, branch and commit SHA.
+- Pull request and issue links.
+- Files imported, actual hashes, 46-page/7-visual coverage and any missing source.
+- Your actual setup/test evidence, environment and unsupported capabilities.
+- Corrected Stage 0, full requirements matrix and detailed blueprint.
+- Your independent advice and specific questions for Codex.
+- One bundled list of genuinely unresolved owner choices.
+- A proposed next stage.
+
+Stop at that review boundary. Do not claim the entire trading system is built.
+
