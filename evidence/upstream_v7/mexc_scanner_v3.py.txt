@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""
+GTC MEXC Futures Read-Only Scanner v3
+Addresses Codex R01-R04 from the v2 review.
+- Strict timestamp validation (missing, malformed, future skew).
+- Volume validation (no silent zero, reject NaN/negative).
+- Malformed row/symbol handling (no crash).
+- Strict API envelope (success must be exactly True).
+- Duplicate symbol policy.
+- Collision-resistant snapshot IDs.
+- Complete JSON, no silent truncation.
+"""
+import json
+import math
+import time
+import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+SCANNER_VERSION = "3.0.0"
+POLICY_VERSION = "discovery-v1-usdt-turnover100k"
+SOURCE_URL = "https://contract.mexc.com/api/v1/contract/ticker"
+MAX_AGE_SECONDS = 300
+MAX_FUTURE_SKEW_SECONDS = 60
+MIN_TURNOVER_USDT = 100000.0
+MAX_SPREAD_BPS = 50.0
+
+def is_finite(x: Any) -> bool:
+    if isinstance(x, bool) or x is None:
+        return False
+    try:
+        f = float(x)
+        return math.isfinite(f)
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+def validate_row(t: Any, received_at: float) -> Optional[Dict[str, Any]]:
+    if not isinstance(t, dict):
+        return {"symbol": None, "reason": "malformed_row", "type": str(type(t))}
+    symbol = t.get("symbol")
+    if not isinstance(symbol, str) or not symbol:
+        return {"symbol": str(symbol) if symbol is not None else None, "reason": "invalid_symbol"}
+    if not symbol.endswith("_USDT"):
+        return {"symbol": symbol, "reason": "not_usdt"}
+    last, bid, ask = t.get("lastPrice"), t.get("bid1"), t.get("ask1")
+    amt, vol = t.get("amount24"), t.get("volume24")
+    ts = t.get("timestamp")
+    for name, val in (("lastPrice", last), ("bid1", bid), ("ask1", ask), ("amount24", amt)):
+        if not is_finite(val):
+            return {"symbol": symbol, "reason": f"nonfinite_{name}"}
+    if vol is not None and not is_finite(vol):
+        return {"symbol": symbol, "reason": "nonfinite_volume24"}
+    if vol is not None and float(vol) < 0:
+        return {"symbol": symbol, "reason": "negative_volume24"}
+    last_f, bid_f, ask_f, amt_f = float(last), float(bid), float(ask), float(amt)
+    if last_f <= 0 or bid_f <= 0 or ask_f <= 0:
+        return {"symbol": symbol, "reason": "nonpositive_price"}
+    if ask_f < bid_f:
+        return {"symbol": symbol, "reason": "crossed_book"}
+    if amt_f < MIN_TURNOVER_USDT:
+        return {"symbol": symbol, "reason": "low_turnover"}
+    if ts is None or not is_finite(ts):
+        return {"symbol": symbol, "reason": "missing_or_invalid_timestamp"}
+    ts_f = float(ts)
+    age = received_at - ts_f / 1000.0
+    if age < -MAX_FUTURE_SKEW_SECONDS:
+        return {"symbol": symbol, "reason": "future_timestamp", "skew_seconds": round(-age, 1)}
+    if age > MAX_AGE_SECONDS:
+        return {"symbol": symbol, "reason": "stale_timestamp", "age_seconds": round(age, 1)}
+    spread_bps = (ask_f - bid_f) / last_f * 10000
+    if spread_bps > MAX_SPREAD_BPS:
+        return {"symbol": symbol, "reason": "wide_spread", "spread_bps": round(spread_bps, 2)}
+    return None
+
+def scan(raw_response: Any, http_status: int = 200, received_at: Optional[float] = None) -> Dict[str, Any]:
+    received_at = received_at or time.time()
+    now_iso = datetime.fromtimestamp(received_at, timezone.utc).isoformat()
+    snapshot_id = f"SNAP-{int(received_at)}-{uuid.uuid4().hex[:8]}"
+    base = {
+        "snapshot_id": snapshot_id,
+        "scanner_version": SCANNER_VERSION,
+        "policy_version": POLICY_VERSION,
+        "source_url": SOURCE_URL,
+        "generated_at": now_iso,
+        "received_at_unix": received_at,
+    }
+    if http_status != 200:
+        return {**base, "status": "http_error", "http_status": http_status, "candidates": [], "rejections": [], "counts": {"raw": 0, "eligible": 0, "rejected": 0}}
+    if not isinstance(raw_response, dict):
+        return {**base, "status": "malformed_envelope", "error": "response_not_object", "candidates": [], "rejections": [], "counts": {"raw": 0, "eligible": 0, "rejected": 0}}
+    success = raw_response.get("success")
+    code = raw_response.get("code")
+    if success is not True or code != 0:
+        return {**base, "status": "api_error", "api_code": code, "error": str(raw_response.get("message", "envelope_failure")), "candidates": [], "rejections": [], "counts": {"raw": 0, "eligible": 0, "rejected": 0}}
+    data = raw_response.get("data")
+    if data is None:
+        return {**base, "status": "malformed_envelope", "error": "missing_data", "candidates": [], "rejections": [], "counts": {"raw": 0, "eligible": 0, "rejected": 0}}
+    if isinstance(data, dict):
+        data = [data]
+    if not isinstance(data, list):
+        return {**base, "status": "malformed_envelope", "error": "data_not_list", "candidates": [], "rejections": [], "counts": {"raw": 0, "eligible": 0, "rejected": 0}}
+    candidates, rejections, seen = [], [], set()
+    for t in data:
+        rej = validate_row(t, received_at)
+        if rej:
+            rejections.append(rej)
+            continue
+        sym = t["symbol"]
+        if sym in seen:
+            rejections.append({"symbol": sym, "reason": "duplicate_symbol"})
+            continue
+        seen.add(sym)
+        candidates.append({
+            "symbol": sym,
+            "lastPrice": float(t["lastPrice"]),
+            "bid1": float(t["bid1"]),
+            "ask1": float(t["ask1"]),
+            "amount24": float(t["amount24"]),
+            "volume24": float(t["volume24"]) if t.get("volume24") is not None else None,
+            "source_timestamp": t.get("timestamp"),
+            "spread_bps": round((float(t["ask1"]) - float(t["bid1"])) / float(t["lastPrice"]) * 10000, 2)
+        })
+    candidates.sort(key=lambda x: x["amount24"], reverse=True)
+    return {
+        **base,
+        "status": "ok",
+        "counts": {"raw": len(data), "eligible": len(candidates), "rejected": len(rejections)},
+        "candidates": candidates,
+        "rejections": rejections
+    }
+
+if __name__ == "__main__":
+    print(json.dumps({"scanner": SCANNER_VERSION, "policy": POLICY_VERSION, "note": "import and call scan()"}))

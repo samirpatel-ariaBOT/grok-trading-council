@@ -1,0 +1,450 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gtc:report:3.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+    },
+    "bot_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "role": {
+      "enum": [
+        "chief",
+        "scout",
+        "news",
+        "sentiment",
+        "quant",
+        "guardian",
+        "auditor"
+      ]
+    },
+    "instruction_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+    },
+    "strategy_version": {
+      "const": "baseline-v1"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "phase": {
+      "enum": [
+        "INITIAL",
+        "FINAL"
+      ]
+    },
+    "non_executable": {
+      "const": true
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "missing_evidence": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000
+      }
+    },
+    "dissent": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2000
+          },
+          "available_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "Z$"
+          },
+          "claim": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "evidence_id",
+          "source_url",
+          "available_at",
+          "claim"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "case_id",
+    "snapshot_id",
+    "bot_id",
+    "role",
+    "instruction_version",
+    "strategy_version",
+    "policy_version",
+    "created_at",
+    "phase",
+    "non_executable",
+    "summary",
+    "missing_evidence",
+    "dissent",
+    "provenance",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "chief"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "decision": {
+                "enum": [
+                  "LONG",
+                  "SHORT",
+                  "WAIT",
+                  "SKIP"
+                ]
+              },
+              "plan_hash": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "decision",
+              "plan_hash",
+              "rationale"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "scout"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "result": {
+                "enum": [
+                  "SHORTLIST",
+                  "NO_CANDIDATE"
+                ]
+              },
+              "symbols": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+                }
+              },
+              "filter_version": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+              }
+            },
+            "required": [
+              "result",
+              "symbols",
+              "filter_version"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "news"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "assessment": {
+                "enum": [
+                  "EVENT",
+                  "NO_VERIFIED_EVENT",
+                  "UNKNOWN"
+                ]
+              },
+              "claims": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                }
+              },
+              "coverage": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "assessment",
+              "claims",
+              "coverage"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "sentiment"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "assessment": {
+                "enum": [
+                  "POSITIVE",
+                  "NEGATIVE",
+                  "MIXED",
+                  "UNKNOWN"
+                ]
+              },
+              "coverage": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "collection_start": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "collection_end": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              }
+            },
+            "required": [
+              "assessment",
+              "coverage",
+              "collection_start",
+              "collection_end"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "quant"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "result": {
+                "enum": [
+                  "PLAN",
+                  "NO_SETUP"
+                ]
+              },
+              "plan_hash": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "result",
+              "plan_hash",
+              "rationale"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "guardian"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "verdict": {
+                "enum": [
+                  "PASS",
+                  "REDUCE",
+                  "VETO",
+                  "INCOMPLETE"
+                ]
+              },
+              "plan_hash": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "verdict",
+              "plan_hash",
+              "rationale"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "auditor"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "proposal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "activation": {
+                "const": false
+              },
+              "evidence_ids": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,120}$"
+                }
+              }
+            },
+            "required": [
+              "proposal",
+              "activation",
+              "evidence_ids"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

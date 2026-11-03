@@ -1,0 +1,39 @@
+{
+  "version": "native-operations-v1",
+  "route": "NATIVE_GROK_BOTS",
+  "owner_requirement": "24/7 unattended native bot operation",
+  "status": "REQUIRED_UNVERIFIED",
+  "paid_api_fallback": false,
+  "execution_authority": false,
+  "schedule_changes_applied_by_codex": false,
+  "reported_existing_scan_task": "9b7c8bf9-1de7-433b-8d41-c289e48c4948",
+  "reported_existing_cadence_seconds": 3600,
+  "reported_schedule_timezone": "Australia/Sydney",
+  "verified_unattended_runs": [],
+  "target_service_levels": {
+    "closed_15m_case_detection_seconds": 60,
+    "maximum_case_lifetime_seconds": 120,
+    "position_monitor_target_seconds": 1,
+    "position_monitor_entry_block_gap_seconds": 3,
+    "status": "DESIGN_TARGETS_NOT_OBSERVED_GUARANTEES"
+  },
+  "roles": {
+    "chief": {"trigger": "validated candidate or due case deadline", "duty": "Dispatch private reports, bound challenge round, record final decision and dissent."},
+    "scout": {"trigger": "each newly completed 15m bar plus material eligibility changes", "duty": "Review deterministic all-contract discovery and filter results; shortlist only eligible instruments."},
+    "news": {"trigger": "case assignment; deduplicated scheduled watch if supported", "duty": "Verify events and source timing; report coverage and new material events."},
+    "sentiment": {"trigger": "case assignment; deduplicated scheduled watch if supported", "duty": "Assess available positioning and sentiment with explicit collection windows and missing coverage."},
+    "quant": {"trigger": "frozen candidate snapshot", "duty": "Inspect canonical numerical plan and expiry; return NO_SETUP for invalid data."},
+    "guardian": {"trigger": "initial case and final immutable plan", "duty": "Independent challenge; PASS/REDUCE/VETO/INCOMPLETE. Veto cannot be outvoted."},
+    "auditor": {"trigger": "completed session or bounded daily review", "duty": "Review recorded outcomes, costs and failed trials; propose changes only, outside council."}
+  },
+  "acceptance_evidence": [
+    "Actual native schedule identifiers and enabled settings",
+    "Applied instruction versions and actual role reports",
+    "Supported automatic dispatch and report collection demonstrated",
+    "At least 24 elapsed hours of timestamped unattended runs, including browser closed if supported",
+    "Observed maximum delays, missed runs, restarts and quota consumption",
+    "Missed-run alert delivered with a tested recipient/channel",
+    "Independent position-monitor evidence and durable host identified",
+    "No overages, paid fallback, duplicated schedules or fabricated live state"
+  ]
+}

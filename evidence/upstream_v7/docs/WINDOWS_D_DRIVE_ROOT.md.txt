@@ -1,0 +1,9 @@
+# Windows Local Build Root
+Proposed fresh root: D:\GrokTradingCouncil
+- All project source, environments, dashboard builds, data, SQLite, logs, controlled caches and artifacts must live under this root.
+- One configured root shared by backend and dashboard.
+- At startup, verify the volume identity and write capability. If unavailable or unsuitable, stop with a clear error. Do not fall back to C: or any old project path.
+- Do not format or migrate the drive.
+- Exclude local state and secrets from the public repository.
+- Neither assistant has verified the physical drive.
+- Grok cloud bot storage is separate; bots themselves are not moved to D:.

@@ -1,0 +1,70 @@
+Grok Trading Council bootstrap validation
+Date: 2 November 2026
+Environment: Codex workspace; Linux, Python 3.12.14
+Scope: setup-only foundation. This is not an exchange, bot, broker, ledger or UI test.
+Command: python -I scripts/create_environment.py
+Working directory: projects/grok-trading-council
+Exit code: 0
+Bootstrap tests: 19 passed, 0 failed.
+Windows/macOS execution: NOT RUN.
+Review: self-review by Codex; Grok review PENDING.
+No remote repository or user-computer installation was performed.
+
+Captured command output:
+{
+  "schema_version": "bootstrap-report-0.1",
+  "project_id": "gtc-fresh-20261102",
+  "setup_configuration_valid": true,
+  "phase": "SETUP",
+  "mode": "PAPER",
+  "trading_ready": false,
+  "paper_engine_implemented": false,
+  "live_order_adapter_implemented": false,
+  "network_enabled": false,
+  "paid_usage_enabled": false,
+  "unresolved_choices": [
+    "agent_route",
+    "contract_family_and_settlement",
+    "allowed_directions",
+    "timeframes",
+    "paper_risk_policy",
+    "runtime_host",
+    "usage_budget"
+  ],
+  "status": "BOOTSTRAP_VALID_ONLY",
+  "python_version": "3.12.14",
+  "platform": "Linux",
+  "project_root": "/workspace/scratch/f97b6f831bb8/projects/grok-trading-council",
+  "isolated_environment": true,
+  "source_document_review": "PENDING_IN_NEW_REPOSITORY",
+  "native_bot_profiles": "NOT_CREATED_BY_THIS_PACKAGE",
+  "repository_connection": "NOT_CHECKED_BY_THIS_COMMAND",
+  "scope": "Configuration diagnostic only; no data collection or trading"
+}
+test_array_is_not_a_configuration (test_bootstrap.SetupBoundaryTests.test_array_is_not_a_configuration) ... ok
+test_cli_invalid_configuration_returns_failure (test_bootstrap.SetupBoundaryTests.test_cli_invalid_configuration_returns_failure) ... ok
+test_different_exchange_is_rejected (test_bootstrap.SetupBoundaryTests.test_different_exchange_is_rejected) ... ok
+test_duplicate_mode_is_rejected (test_bootstrap.SetupBoundaryTests.test_duplicate_mode_is_rejected) ... ok
+test_execution_cannot_be_enabled (test_bootstrap.SetupBoundaryTests.test_execution_cannot_be_enabled) ... ok
+test_financial_defaults_cannot_be_silently_activated (test_bootstrap.SetupBoundaryTests.test_financial_defaults_cannot_be_silently_activated) ... ok
+test_foreign_project_identity_is_rejected (test_bootstrap.SetupBoundaryTests.test_foreign_project_identity_is_rejected) ... ok
+test_live_mode_cannot_be_enabled (test_bootstrap.SetupBoundaryTests.test_live_mode_cannot_be_enabled) ... ok
+test_malformed_json_is_rejected (test_bootstrap.SetupBoundaryTests.test_malformed_json_is_rejected) ... ok
+test_missing_field_is_rejected (test_bootstrap.SetupBoundaryTests.test_missing_field_is_rejected) ... ok
+test_network_cannot_be_enabled (test_bootstrap.SetupBoundaryTests.test_network_cannot_be_enabled) ... ok
+test_non_finite_json_is_rejected (test_bootstrap.SetupBoundaryTests.test_non_finite_json_is_rejected) ... ok
+test_numeric_zero_is_not_false (test_bootstrap.SetupBoundaryTests.test_numeric_zero_is_not_false) ... ok
+test_paid_usage_cannot_be_enabled (test_bootstrap.SetupBoundaryTests.test_paid_usage_cannot_be_enabled) ... ok
+test_pending_choices_cannot_be_omitted (test_bootstrap.SetupBoundaryTests.test_pending_choices_cannot_be_omitted) ... ok
+test_setup_refuses_an_existing_environment (test_bootstrap.SetupBoundaryTests.test_setup_refuses_an_existing_environment) ... ok
+test_string_false_is_not_false (test_bootstrap.SetupBoundaryTests.test_string_false_is_not_false) ... ok
+test_unknown_fields_are_rejected (test_bootstrap.SetupBoundaryTests.test_unknown_fields_are_rejected) ... ok
+test_valid_draft_remains_unready (test_bootstrap.SetupBoundaryTests.test_valid_draft_remains_unready) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.106s
+
+OK
+Fresh environment created; bootstrap checks passed. Trading is not implemented.
+
+
