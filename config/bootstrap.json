@@ -1,0 +1,23 @@
+{
+  "schema_version": "bootstrap-0.1",
+  "project_id": "gtc-fresh-20261102",
+  "phase": "SETUP",
+  "mode": "PAPER",
+  "exchange": "MEXC",
+  "market": "CRYPTO_FUTURES",
+  "universe": "ALL_ELIGIBLE_CONTRACTS",
+  "data_mode": "FIXTURE_ONLY",
+  "execution_enabled": false,
+  "network_enabled": false,
+  "paid_usage_enabled": false,
+  "pending_choices": {
+    "agent_route": null,
+    "contract_family_and_settlement": null,
+    "allowed_directions": null,
+    "timeframes": null,
+    "paper_risk_policy": null,
+    "runtime_host": null,
+    "usage_budget": null
+  }
+}
+

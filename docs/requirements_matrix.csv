@@ -1,0 +1,108 @@
+requirement_id,source,module,implementation_path,test_or_evidence,status,notes
+REQ-M01,Master M01,M01,config/bootstrap.json,tests/test_bootstrap.py,PARTIAL,Demo policy isolated; operational choices unresolved
+REQ-M02,Master M02,M02,schemas/report.schema.json,tests/test_foundation.py::test_schema_stamping_and_idempotency,PARTIAL,Report v3 implemented; joint review pending; other records internal typed-by-validation dictionaries
+REQ-M03,Master M03,M03,services/data/,tests/test_foundation.py::test_scanner_duplicates_and_envelope,PARTIAL,Validator/collector/normalizers tested; live collection blocked; continuous OHLC integration pending
+REQ-M04,Master M04,M04,services/features/baseline.py,tests/test_boundaries.py::test_regime_uses_seeded_values_numerically,VERIFIED_DEMO,Canonical formula and boundary tests; not evidence of economic edge
+REQ-M05,Master M05,M05,bots/,evidence/upstream_v7/inventory.json,BLOCKED,Brief files supplied; actual native configuration and samples incomplete
+REQ-M06,Master M06,M06,services/coordinator/store.py,tests/test_foundation.py::test_wait_and_veto,VERIFIED_DEMO,Software protocol only; native conversation unverified
+REQ-M07,Master M07,M07,services/paper/engine.py,tests/test_foundation.py::test_single_atomic_slot,VERIFIED_DEMO,Atomic fixture policy; operational risk policy unapproved
+REQ-M08,Master M08,M08,services/paper/engine.py,tests/test_foundation.py::test_partial_restart_cancel_and_idempotent_fill,VERIFIED_DEMO,Fictional liquidity/carrying model; no exchange execution
+REQ-M09,Master M09,M09,scripts/monitor_demo.py,tests/test_foundation.py::test_stale_unpriced_and_persistent_gap_latch,PARTIAL,Logic tested; durable unattended process and actual timing unverified
+REQ-M10,Master M10,M10,services/coordinator/store.py,tests/test_boundaries.py::test_corrupt_cash_and_backup_recovery,VERIFIED_DEMO,SQLite transaction/recovery tests; no tamper-proof authentication claim
+REQ-M11,Master M11,M11,services/coordinator/store.py,tests/test_foundation.py::test_schema_stamping_and_idempotency,PARTIAL,Versioned evidence and export; native origin operator-attested
+REQ-M12,Master M12,M12,research/evaluation.py,tests/test_boundaries.py::test_metrics_independent_arithmetic,PARTIAL,Descriptive arithmetic/drafts; walk-forward pipeline and data not implemented
+REQ-M13,Master M13,M13,services/api.py,tests/test_api.py,VERIFIED_DEMO,"Local session, host/origin checks and API tests; not multi-user production auth"
+REQ-M14,Master M14,M14,apps/dashboard/,evidence/ui/,VERIFIED_DEMO,Seven screens; desktop+390px mobile static review; API tested separately
+REQ-M15,Master M15,M15,scripts/launch.ps1,docs/NATIVE_24_7.md,PARTIAL,D-drive launcher source reviewed; actual Windows volume/runtime not verified
+REQ-M16,Master M16,M16,tests/,evidence/test_results.json,PARTIAL,Executed regression suite; native/forward/full screen-state acceptance pending
+REQ-EMA-SEED,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_sma_seed_and_wilder,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-EMA-WIRING,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_regime_uses_seeded_values_numerically,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-OHLC-GAP-UTC,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_invalid_history,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-FLAT-REGIME,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_flat_regime,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-BREAKOUT-HIGH-LOW-VOLUME,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_breakout_excludes_trigger_and_uses_highs,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-INVALID-TICK,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_invalid_tick,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-PLAN-DIRECTION-ROUNDING,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_plan_boundaries,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-EXPIRY-FRESHNESS,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_expiry_and_fresh_quote,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-FINITE-NUMBERS,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_bad_numbers,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-SCANNER-ENVELOPE-DUPLICATES,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_scanner_duplicates_and_envelope,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-SCANNER-BAD-ROWS,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_scanner_rejections,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-SCANNER-STRICT-OUTPUT,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_malformed_symbol_remains_strict_json,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-HTTP-ERROR-PROVENANCE,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_collector_records_errors,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-IMPORT-IDEMPOTENCY,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_schema_stamping_and_idempotency,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-ROLE-CONTEXT-CUTOFF,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_role_and_snapshot_mismatch,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-WAIT-VETO,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_wait_and_veto,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-RISK-SIZE-ROUNDING,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_numeric_collapse_finite_and_risk_rounding,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-ATOMIC-SLOT,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_single_atomic_slot,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-PARTIAL-RESTART,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_partial_restart_cancel_and_idempotent_fill,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-PAUSE-GAP-EXIT,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_gap_exit_uses_actual_quote_and_pause_keeps_monitor,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-STALE-LATCH,PDF p14-19/25/35-36; Master tests,M16,tests/test_foundation.py,tests/test_foundation.py::test_stale_unpriced_and_persistent_gap_latch,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-REAL-PACKET-BLOCK,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_unauthorized_real_packet_cannot_fill,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-RECONCILE-BACKUP,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_corrupt_cash_and_backup_recovery,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-DAILY-MARKED-LOSS,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_daily_unrealized_loss_latches_and_survives_restart,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-TRIGGER-DEDUP,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_duplicate_trigger_not_retraded,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-METADATA-AVAILABILITY,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_metadata_and_actual_candle_availability,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-METRICS,PDF p14-19/25/35-36; Master tests,M16,tests/test_boundaries.py,tests/test_boundaries.py::test_metrics_independent_arithmetic,VERIFIED_DEMO,Executed locally; fixture scope
+REQ-SCREEN-OVERVIEW,PDF p39,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-OVERVIEW-LOADING,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-OVERVIEW-EMPTY,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-OVERVIEW-STALE,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-OVERVIEW-PARTIAL,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-OVERVIEW-ERROR,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-OVERVIEW-DISCONNECTED,PDF p39 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM,PDF p40,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-MEETING-ROOM-LOADING,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM-EMPTY,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM-STALE,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM-PARTIAL,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM-ERROR,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MEETING-ROOM-DISCONNECTED,PDF p40 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS,PDF p41,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-MARKETS-LOADING,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS-EMPTY,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS-STALE,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS-PARTIAL,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS-ERROR,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-MARKETS-DISCONNECTED,PDF p41 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS,PDF p42,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-POSITIONS-LOADING,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS-EMPTY,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS-STALE,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS-PARTIAL,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS-ERROR,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-POSITIONS-DISCONNECTED,PDF p42 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH,PDF p43,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-RESEARCH-LOADING,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH-EMPTY,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH-STALE,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH-PARTIAL,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH-ERROR,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-RESEARCH-DISCONNECTED,PDF p43 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL,PDF p44,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-JOURNAL-LOADING,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL-EMPTY,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL-STALE,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL-PARTIAL,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL-ERROR,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-JOURNAL-DISCONNECTED,PDF p44 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS,PDF p45,M14,apps/dashboard/app.js,evidence/ui/,VERIFIED_DEMO,Rendered desktop and 390px iframe; no document overflow after fix
+REQ-SCREEN-SETTINGS-LOADING,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS-EMPTY,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS-STALE,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS-PARTIAL,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS-ERROR,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-SCREEN-SETTINGS-DISCONNECTED,PDF p45 state contract,M14,apps/dashboard/app.js,evidence/verification.md,PARTIAL,Shared handling and fixture examples exist; exhaustive per-screen state/browser matrix not yet verified
+REQ-NATIVE-CHIEF,PDF p6-13; owner native route,M05,bots/chief.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-SCOUT,PDF p6-13; owner native route,M05,bots/scout.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-NEWS,PDF p6-13; owner native route,M05,bots/news.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-SENTIMENT,PDF p6-13; owner native route,M05,bots/sentiment.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-QUANT,PDF p6-13; owner native route,M05,bots/quant.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-GUARDIAN,PDF p6-13; owner native route,M05,bots/guardian.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-NATIVE-AUDITOR,PDF p6-13; owner native route,M05,bots/auditor.md,Account-side evidence required,BLOCKED,File supplied; actual native application/role sample not verified by Codex
+REQ-OPS-SCHEDULES,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-DISPATCH,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-UNATTENDED-24H,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-MISSED-RUN-ALERT,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-QUOTA,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-DURABLE-HOST,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-D-DRIVE,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated
+REQ-OPS-GROUP-MEMBERSHIP,Owner 24/7 and D: requirements,M15,config/native_operations.json,Account/local-runtime evidence required,BLOCKED,Do not mark live or complete until demonstrated

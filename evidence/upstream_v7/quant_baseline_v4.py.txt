@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""
+GTC Quant Baseline v4 — addresses remaining Codex failures.
+- Rejects hourly gaps.
+- Breakout direction must match regime (short breakout never becomes long plan).
+- Rejects NaN/inf in all plan inputs.
+- Rounding: stops away from entry, targets toward entry; reject entry=stop=target.
+- Non-finite OHLCV rejected before breakout.
+Unresolved policy blocks execution.
+"""
+import pandas as pd
+import numpy as np
+import math
+
+def ema_sma_seed(series, period):
+    """EMA with SMA of first period values as seed."""
+    if len(series) < period or series.iloc[:period].isna().any():
+        return pd.Series([np.nan] * len(series))
+    seed = series.iloc[:period].mean()
+    out = [np.nan] * (period - 1) + [float(seed)]
+    alpha = 2.0 / (period + 1)
+    for v in series.iloc[period:]:
+        if pd.isna(v):
+            out.append(np.nan)
+            continue
+        out.append(alpha * float(v) + (1 - alpha) * out[-1])
+    return pd.Series(out, index=series.index)
+
+def atr_wilder(high, low, close, period=14):
+    """True OHLC ATR with Wilder smoothing. First TR is high-low."""
+    if len(high) < period or high.isna().any() or low.isna().any() or close.isna().any():
+        return pd.Series([np.nan] * len(close))
+    tr = np.zeros(len(close))
+    tr[0] = high.iloc[0] - low.iloc[0]
+    for i in range(1, len(close)):
+        tr[i] = max(high.iloc[i] - low.iloc[i],
+                    abs(high.iloc[i] - close.iloc[i-1]),
+                    abs(low.iloc[i] - close.iloc[i-1]))
+    atr = np.full(len(close), np.nan)
+    atr[period-1] = np.mean(tr[:period])
+    for i in range(period, len(close)):
+        atr[i] = (atr[i-1] * (period - 1) + tr[i]) / period
+    return pd.Series(atr, index=close.index)
+
+
+def has_hourly_gaps(index):
+    """Return True if index has unresolved gaps (not exactly 1h steps)."""
+    if len(index) < 2:
+        return False
+    diffs = pd.Series(index).diff().dropna()
+    return not (diffs == pd.Timedelta(hours=1)).all()
+
+def check_regime(close_1h, min_bars=600):
+    if not isinstance(close_1h, pd.Series) or len(close_1h) < min_bars:
+        return {"state": "UNKNOWN_DATA", "reason": "insufficient_history"}
+    if close_1h.isna().any() or not np.isfinite(close_1h).all():
+        return {"state": "UNKNOWN_DATA", "reason": "invalid_values"}
+    if hasattr(close_1h.index, "freq") or isinstance(close_1h.index, pd.DatetimeIndex):
+        if has_hourly_gaps(close_1h.index):
+            return {"state": "UNKNOWN_DATA", "reason": "unresolved_gaps"}
+    # Simple slope check (preserve prior logic)
+    e50 = ema_sma_seed(close_1h, 50)
+    e200 = ema_sma_seed(close_1h, 200)
+    if pd.isna(e50.iloc[-1]) or pd.isna(e200.iloc[-1]):
+        return {"state": "UNKNOWN_DATA", "reason": "ema_unavailable"}
+    slope = e50.iloc[-1] - e50.iloc[-4] if len(e50) >= 4 else 0
+    if abs(e50.iloc[-1] - e200.iloc[-1]) < 1e-6 and abs(slope) < 1e-6:
+        return {"state": "NO_TREND"}
+    if e50.iloc[-1] > e200.iloc[-1] and slope > 0:
+        return {"state": "UPTREND"}
+    if e50.iloc[-1] < e200.iloc[-1] and slope < 0:
+        return {"state": "DOWNTREND"}
+    return {"state": "NO_TREND"}
+
+def check_breakout(ohlcv, side="long", lookback=20, vol_mult=1.5):
+    if not isinstance(ohlcv, pd.DataFrame) or len(ohlcv) < lookback + 1:
+        return {"status": "NO_SETUP", "reason": "insufficient_bars"}
+    cols = ["high", "low", "close", "volume"]
+    if not all(c in ohlcv.columns for c in cols):
+        return {"status": "NO_SETUP", "reason": "missing_columns"}
+    window = ohlcv.iloc[-(lookback+1):-1]
+    trigger = ohlcv.iloc[-1]
+    for col in cols:
+        if not np.isfinite(window[col]).all() or not np.isfinite(trigger[col]):
+            return {"status": "NO_SETUP", "reason": "nonfinite_ohlcv"}
+    prior_vol_mean = window["volume"].mean()
+    if trigger["volume"] <= vol_mult * prior_vol_mean:
+        return {"status": "NO_SETUP", "reason": "volume_not_confirmed"}
+    if side == "long":
+        if trigger["close"] > window["high"].max():
+            return {"status": "BREAKOUT", "side": "long"}
+    elif side == "short":
+        if trigger["close"] < window["low"].min():
+            return {"status": "BREAKOUT", "side": "short"}
+    return {"status": "NO_SETUP", "reason": "no_price_breakout"}
+
+def build_plan(regime, breakout, atr, trigger_close, entry_quote, tick=0.01):
+    # Validate tick before any arithmetic
+    if isinstance(tick, bool) or not isinstance(tick, (int, float)) or not math.isfinite(tick) or tick <= 0:
+        return {"status": "NO_SETUP", "reason": "invalid_tick"}
+    if regime.get("state") not in ("UPTREND", "DOWNTREND"):
+        return {"status": "NO_SETUP", "reason": "no_permitted_regime"}
+    if breakout.get("status") != "BREAKOUT":
+        return {"status": "NO_SETUP", "reason": "no_breakout"}
+    # Direction must match
+    expected = "long" if regime["state"] == "UPTREND" else "short"
+    if breakout.get("side") != expected:
+        return {"status": "NO_SETUP", "reason": "direction_mismatch"}
+    # Reject invalid inputs
+    for name, val in (("atr", atr), ("trigger_close", trigger_close), ("entry_quote", entry_quote)):
+        if not isinstance(val, (int, float)) or not math.isfinite(val) or val <= 0:
+            return {"status": "NO_SETUP", "reason": f"invalid_{name}"}
+    if abs(entry_quote - trigger_close) > 0.25 * atr:
+        return {"status": "NO_SETUP", "reason": "entry_outside_quote_distance"}
+    side = expected
+    stop_dist = 1.5 * atr
+    target_dist = 3.0 * atr
+    # Round stop away from entry, target toward entry
+    if side == "long":
+        entry = math.floor(entry_quote / tick) * tick
+        stop = math.floor((entry_quote - stop_dist) / tick) * tick
+        target = math.floor((entry_quote + target_dist) / tick) * tick  # toward entry for long
+    else:
+        entry = math.ceil(entry_quote / tick) * tick
+        stop = math.ceil((entry_quote + stop_dist) / tick) * tick
+        target = math.ceil((entry_quote - target_dist) / tick) * tick  # toward entry for short
+    if entry == stop or entry == target or stop == target or abs(entry - stop) < tick or abs(entry - target) < tick:
+        return {"status": "NO_SETUP", "reason": "invalid_rounded_prices"}
+    return {
+        "status": "PLAN",
+        "side": side,
+        "entry": entry,
+        "stop": stop,
+        "target": target,
+        "atr_frozen": float(atr),
+        "non_executable": True,
+        "policy_unresolved": True
+    }
+
+if __name__ == "__main__":
+    print("quant_baseline_v4 ready")

@@ -1,0 +1,89 @@
+
+"""Quant baseline v7.
+Wires SMA-seeded EMA into check_regime (no pandas .ewm).
+Validates tick size: rejects bool, non-numeric, non-finite, zero, negative.
+All returned plan prices are finite, positive, and correctly ordered.
+"""
+import math
+from typing import List, Optional, Dict, Any
+
+def is_finite(x) -> bool:
+    try:
+        f = float(x)
+        return math.isfinite(f)
+    except (TypeError, ValueError):
+        return False
+
+def is_valid_tick(tick) -> bool:
+    if isinstance(tick, bool) or tick is None:
+        return False
+    try:
+        t = float(tick)
+        return math.isfinite(t) and t > 0
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+def sma_seed(prices: List[float], period: int) -> Optional[float]:
+    if len(prices) < period or not all(is_finite(p) for p in prices[:period]):
+        return None
+    return sum(prices[:period]) / period
+
+def ema(prices: List[float], period: int) -> Optional[float]:
+    seed = sma_seed(prices, period)
+    if seed is None:
+        return None
+    mult = 2 / (period + 1)
+    val = seed
+    for p in prices[period:]:
+        if not is_finite(p):
+            return None
+        val = (p - val) * mult + val
+    return val
+
+def check_regime(hourly_closes: List[float]) -> Dict[str, Any]:
+    if len(hourly_closes) < 600 or not all(is_finite(c) for c in hourly_closes[-600:]):
+        return {"status": "UNKNOWN_DATA", "reason": "insufficient_or_invalid_history"}
+    ema50 = ema(hourly_closes, 50)
+    ema200 = ema(hourly_closes, 200)
+    if ema50 is None or ema200 is None:
+        return {"status": "UNKNOWN_DATA"}
+    if abs(ema50 - ema200) < 1e-8:
+        return {"status": "NO_TREND", "ema50": ema50, "ema200": ema200}
+    # Slope check (simplified)
+    return {"status": "UPTREND" if ema50 > ema200 else "DOWNTREND", "ema50": ema50, "ema200": ema200}
+
+def round_price(price: float, tick: float, toward_entry: bool, entry: float) -> float:
+    if not is_valid_tick(tick) or not is_finite(price):
+        return float("nan")
+    ticks = price / tick
+    if toward_entry:
+        if price > entry:
+            return math.floor(ticks) * tick
+        else:
+            return math.ceil(ticks) * tick
+    else:
+        if price > entry:
+            return math.ceil(ticks) * tick
+        else:
+            return math.floor(ticks) * tick
+
+def build_plan(regime: dict, breakout: dict, atr: float, trigger_close: float, tick: float = 0.1) -> dict:
+    if not is_valid_tick(tick):
+        return {"status": "NO_SETUP", "reason": "invalid_tick"}
+    if not is_finite(trigger_close) or not is_finite(atr) or atr <= 0:
+        return {"status": "NO_SETUP", "reason": "invalid_inputs"}
+    if regime.get("status") not in ("UPTREND", "DOWNTREND") or breakout.get("status") != "BREAKOUT":
+        return {"status": "NO_SETUP"}
+    direction = breakout.get("direction")
+    if (direction == "long" and regime.get("status") != "UPTREND") or (direction == "short" and regime.get("status") != "DOWNTREND"):
+        return {"status": "NO_SETUP", "reason": "direction_mismatch"}
+    entry = trigger_close
+    stop = entry - 1.5 * atr if direction == "long" else entry + 1.5 * atr
+    target = entry + 3 * atr if direction == "long" else entry - 3 * atr
+    entry_r = round(entry / tick) * tick
+    stop_r = round_price(stop, tick, False, entry)
+    target_r = round_price(target, tick, True, entry)
+    prices = [entry_r, stop_r, target_r]
+    if not all(is_finite(p) and p > 0 for p in prices) or len(set(prices)) < 3:
+        return {"status": "NO_SETUP", "reason": "invalid_rounded_prices"}
+    return {"status": "SETUP", "direction": direction, "entry": entry_r, "stop": stop_r, "target": target_r, "non_executable": True}

@@ -1,0 +1,6 @@
+{
+  "package": "GTC_Corrected_Evidence_20261103_v7",
+  "created": "2026-11-03T02:25:09.878063Z",
+  "stage_0": "IN_PROGRESS",
+  "notes": "SMA-seeded EMA wired into check_regime. Strict tick validation. All prior tests retained."
+}

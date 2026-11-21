@@ -1,0 +1,58 @@
+{
+  "version": "2.0",
+  "pages": 46,
+  "local_originals_verified": true,
+  "text_extraction": "spec/text/project_v2.txt",
+  "original_binary_files": [
+    {
+      "name": "Grok_Trading_Council_Part_1_of_4_Project_Specification.pdf",
+      "sha256": "5dfc50b0397e40a1472ad054cc7ee591bc7493294cff6b16fa61a2dfebc6821c",
+      "bytes": 2940023,
+      "repository_copy": false,
+      "reported_grok_sha256": "deffb5a1d0ce5b9331acd3e12d796d10c488e445f4d3b25190d7edc81950a70e",
+      "bytes_match_reported_hash": false,
+      "page_count": 38,
+      "page_text_matches_combined_v2": true,
+      "expected_repository_path": "spec/originals/Grok_Trading_Council_Part_1_of_4_Project_Specification.pdf"
+    },
+    {
+      "name": "Grok_Trading_Council_Part_2_of_4_Overview_Meeting_Markets.pdf",
+      "sha256": "16899d935865e3b3e59efdc1fb80ba08e1ee642f6698fa5e7daf60131f181e25",
+      "bytes": 12129489,
+      "repository_copy": false,
+      "reported_grok_sha256": "16899d935865e3b3e59efdc1fb80ba08e1ee642f6698fa5e7daf60131f181e25",
+      "bytes_match_reported_hash": true,
+      "page_count": 3,
+      "page_text_matches_combined_v2": true,
+      "expected_repository_path": "spec/originals/Grok_Trading_Council_Part_2_of_4_Overview_Meeting_Markets.pdf"
+    },
+    {
+      "name": "Grok_Trading_Council_Part_3_of_4_Positions_Research_Journal.pdf",
+      "sha256": "607bd074ea37025aa4acbca0a517a74ac5a4ea98d2c57d6f940b0e86db3e13fe",
+      "bytes": 11077363,
+      "repository_copy": false,
+      "reported_grok_sha256": "607bd074ea37025aa4acbca0a517a74ac5a4ea98d2c57d6f940b0e86db3e13fe",
+      "bytes_match_reported_hash": true,
+      "page_count": 3,
+      "page_text_matches_combined_v2": true,
+      "expected_repository_path": "spec/originals/Grok_Trading_Council_Part_3_of_4_Positions_Research_Journal.pdf"
+    },
+    {
+      "name": "Grok_Trading_Council_Part_4_of_4_Settings_Final_Check.pdf",
+      "sha256": "20df1d73f3c1c415a684ea1a58f7935bdae917ba976e781aea394b6fa0b0369f",
+      "bytes": 3846118,
+      "repository_copy": false,
+      "reported_grok_sha256": "f6f398162a5da391cc78eada0ab33c2dd218371e9e4e9836d64115c43b80c93c",
+      "bytes_match_reported_hash": false,
+      "page_count": 2,
+      "page_text_matches_combined_v2": true,
+      "expected_repository_path": "spec/originals/Grok_Trading_Council_Part_4_of_4_Settings_Final_Check.pdf"
+    }
+  ],
+  "master": {
+    "path": "spec/originals/Grok_Trading_Council_Master_Build_Instructions.txt",
+    "sha256": "2f2f10192ffe95f030ae75dfd117bee315839353d1f0402e5c1220f628565f66"
+  },
+  "source_variants_note": "Parts 1 and 4 differ in binary hash from Grok-reported hashes. Full extracted page text compared against available combined v2; evidence below does not assert byte equivalence to missing reported variants.",
+  "publication_note": "Four original PDFs are preserved in the verified local source checkpoint. Large binary connector upload did not complete; repository contains full extracted text and the master instructions. Do not claim PDF bytes are published."
+}

@@ -1,0 +1,19 @@
+# Stage 0 Capability Report
+
+Status: **IN_PROGRESS**
+
+Updated: 2026-11-02
+
+## Completed
+- Read-only MEXC scanner verified
+- Recurring hourly automation active (task 9b7c8bf9-1de7-433b-8d41-c289e48c4948)
+- Quant baseline numerical functions implemented
+- Report schema drafted
+
+## Blocked
+- Native group meeting room creation
+- Automatic bot messaging/handoffs
+- Full bot acknowledgement verification
+
+## Not started
+- Software risk gate, paper broker, ledger, position monitor

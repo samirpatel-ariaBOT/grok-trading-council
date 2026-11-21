@@ -1,0 +1,31 @@
+
+"""Regression tests for quant_baseline_v7.
+Covers SMA-seeded EMA usage and invalid tick sizes.
+"""
+from quant_baseline_v7 import check_regime, build_plan
+import math
+
+def test_sma_seeded_regime():
+    closes = [100.0] * 600
+    result = check_regime(closes)
+    assert result["status"] == "NO_TREND"
+    assert "ema50" in result
+
+def test_invalid_tick_zero():
+    result = build_plan({"status": "UPTREND"}, {"status": "BREAKOUT", "direction": "long"}, 10.0, 100.0, tick=0)
+    assert result["status"] == "NO_SETUP"
+    assert result["reason"] == "invalid_tick"
+
+def test_invalid_tick_nan():
+    result = build_plan({"status": "UPTREND"}, {"status": "BREAKOUT", "direction": "long"}, 10.0, 100.0, tick=float("nan"))
+    assert result["status"] == "NO_SETUP"
+
+def test_invalid_tick_inf():
+    result = build_plan({"status": "UPTREND"}, {"status": "BREAKOUT", "direction": "long"}, 10.0, 100.0, tick=float("inf"))
+    assert result["status"] == "NO_SETUP"
+
+def test_invalid_tick_bool():
+    result = build_plan({"status": "UPTREND"}, {"status": "BREAKOUT", "direction": "long"}, 10.0, 100.0, tick=True)
+    assert result["status"] == "NO_SETUP"
+
+print("All v7 tests passed.")

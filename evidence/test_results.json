@@ -1,0 +1,43 @@
+{
+  "run_at_utc": "2026-11-03T04:12:32.449619+00:00",
+  "environment": "Linux cloud; separate from physical D:",
+  "results": [
+    {
+      "command": [
+        "/tmp/gtc-build-venv/bin/python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "stdout": "........................................................................ [ 84%]\n.............                                                            [100%]\n85 passed in 7.97s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "apps/dashboard/app.js"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/tmp/gtc-build-venv/bin/ruff",
+        "check",
+        "services",
+        "research",
+        "tests/test_api.py",
+        "tests/test_boundaries.py",
+        "tests/test_foundation.py",
+        "--select",
+        "F"
+      ],
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    }
+  ]
+}

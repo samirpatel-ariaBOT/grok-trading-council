@@ -1,0 +1,49 @@
+{
+  "status": "DEFINITIONS_PENDING_SOURCE_REVIEW",
+  "note": "Role index only. No native bots, API agents or per-role prompts are created by this package.",
+  "roles": [
+    {
+      "id": "chief",
+      "color": "orange",
+      "council": true,
+      "duty": "Coordinate reports and issue one auditable decision; preserve veto."
+    },
+    {
+      "id": "scout",
+      "color": "yellow",
+      "council": true,
+      "duty": "Scan all eligible contracts; rank reproducible candidates and rejection reasons."
+    },
+    {
+      "id": "news",
+      "color": "blue",
+      "council": true,
+      "duty": "Verify events, source origin and timing; report uncertainty."
+    },
+    {
+      "id": "sentiment",
+      "color": "purple",
+      "council": true,
+      "duty": "Assess sampled sentiment and coverage without inventing missing metrics."
+    },
+    {
+      "id": "quant",
+      "color": "cyan",
+      "council": true,
+      "duty": "Use verified numerical tools to propose a full plan or NO_SETUP."
+    },
+    {
+      "id": "guardian",
+      "color": "green",
+      "council": true,
+      "duty": "Independent PASS, REDUCE, VETO or INCOMPLETE; cannot override software limits."
+    },
+    {
+      "id": "research_auditor",
+      "color": "silver",
+      "council": false,
+      "duty": "Review experiments and propose changes; cannot activate or trade."
+    }
+  ]
+}
+
