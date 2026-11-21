@@ -23,30 +23,30 @@ operational trading activation.** The repository is public by the owner's decisi
 
 ## Start on the intended portable D: drive (Windows)
 
-The **Git checkout itself**, not a \`repo\` subfolder, must be at
-\`D:\GrokTradingCouncil\`. Never move or format unrelated drive content.
+The **Git checkout itself**, not a `repo` subfolder, must be at
+`D:\GrokTradingCouncil`. Never move or format unrelated drive content.
 
 First inspect the physical disk and confirm this is your intended portable drive:
 
-\`\`\`powershell
+```powershell
 Get-Volume -DriveLetter D | Format-List DriveLetter,FileSystemLabel,FileSystem,UniqueId,HealthStatus,SizeRemaining
 Get-Partition -DriveLetter D | Get-Disk | Format-List FriendlyName,SerialNumber,BusType
 py -0p
 py -3.12 -c "import sys; print(sys.version)"
-\`\`\`
+```
 
 Verify the disk/UniqueId independently. Do not use a guessed value. In PowerShell
 from the reviewed integrated checkout:
 
-\`\`\`powershell
+```powershell
 cd D:\GrokTradingCouncil
 $expected = Read-Host 'Enter the verified D: volume UniqueId'
 .\scripts\launch.ps1 -ExpectedVolumeUniqueId $expected -Setup
 .\scripts\launch.ps1 -ExpectedVolumeUniqueId $expected
-\`\`\`
+```
 
-Setup runs **only** with \`-Setup\`; it may create \`.venv\` and install the exact
-versions pinned in \`requirements-dev.lock.txt\`. The pins currently lack
+Setup runs **only** with `-Setup`; it may create `.venv` and install the exact
+versions pinned in `requirements-dev.lock.txt`. The pins currently lack
 cryptographic package hashes. Normal startup **does not reinstall packages**.
 If a PowerShell execution policy blocks the script, follow your locally reviewed
 execution-policy process; do not bypass security settings automatically.
@@ -56,7 +56,7 @@ It does not change system-wide profile locations. Physical Windows verification
 is still **unperformed**.
 
 When the fixture server reports
-\`GTC fixture DEMO at http://127.0.0.1:8765; no live/native connection\`,
+`GTC fixture DEMO at http://127.0.0.1:8765; no live/native connection`,
 open **http://127.0.0.1:8765** locally on that same computer.
 Do not enable the cloud preview or expose port 8765 on a network.
 
@@ -64,7 +64,7 @@ Do not enable the cloud preview or expose port 8765 on a network.
 
 In a **second PowerShell** window:
 
-\`\`\`powershell
+```powershell
 cd D:\GrokTradingCouncil
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe scripts\check_setup.py
@@ -74,7 +74,7 @@ if ($state.mode -ne 'DEMO' -or $state.live_market_connected -ne $false -or
     throw 'Unexpected mode or native status: stop the server'
 }
 $state | Select-Object mode,stage,fixture_clock,live_market_connected
-\`\`\`
+```
 
 In the browser verify each screen:
 **Overview, Meeting Room, Markets, Positions, Research, Journal, Settings**.
@@ -88,10 +88,10 @@ and static UI checks do not establish Windows operation.
 For orderly shutdown, press **Ctrl+C** in the launcher's PowerShell window.
 Wait for the command prompt to return and check that no service is listening:
 
-\`\`\`powershell
+```powershell
 Get-NetTCPConnection -LocalPort 8765 -State Listen -ErrorAction SilentlyContinue
 Get-ChildItem D:\GrokTradingCouncil\runtime -Filter 'demo.sqlite*'
-\`\`\`
+```
 
 Do not detach D: while any fixture process is running. Never manually delete
 SQLite WAL or SHM files. Confirm stop/restart persistence and backup integrity
@@ -99,21 +99,21 @@ before calling the portable-drive runtime ready.
 
 ## Linux/cloud development (NOT Windows verification)
 
-\`\`\`sh
+```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.lock.txt
 .venv/bin/python -m pytest -q
 .venv/bin/python scripts/run.py --demo
-\`\`\`
+```
 
-\`python scripts/collect_public.py\` makes one optional public read-only discovery
-request and stores raw provenance under \`runtime/public_readonly/\`. It never
+`python scripts/collect_public.py` makes one optional public read-only discovery
+request and stores raw provenance under `runtime/public_readonly/`. It never
 feeds the demo ledger. The observed cloud request returned HTML "Site Unavailable";
 successful live collection is not claimed.
 
-\`python scripts/monitor_demo.py --quotes <fictional-quote-map.json>\` runs the
+`python scripts/monitor_demo.py --quotes <fictional-quote-map.json>` runs the
 independent demo monitor with actual UTC quote timestamps. It is not a durable
-24/7 service. \`python scripts/backup_demo.py\` creates an integrity-checked
+24/7 service. `python scripts/backup_demo.py` creates an integrity-checked
 SQLite backup. Never replace an active ledger with a backup.
 
 ## Review map
@@ -134,7 +134,7 @@ The four source PDFs contain 46 pages, but their large binary GitHub upload
 did not complete. The integrated branch includes extracted text, master
 instructions and screenshots; it does not claim the PDFs are in GitHub.
 Parts 1 and 4 differ in binary hash from Grok's earlier reported hashes.
-Archived v7 scripts are non-executable references in \`evidence/upstream_v7/\`;
+Archived v7 scripts are non-executable references in `evidence/upstream_v7/`;
 do not import their incompatible implementations.
 
 ## Collaboration and operational boundary
