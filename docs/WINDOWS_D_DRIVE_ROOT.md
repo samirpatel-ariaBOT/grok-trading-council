@@ -1,17 +1,61 @@
-# Portable D: requirement
+# Windows portable D: drive and fixture demo
 
-Use **D:\GrokTradingCouncil** for this fresh project's checkout, environment, project
-temp/cache, database, logs, evidence and backups. `scripts/launch.ps1` compares the
-actual D: volume UniqueId with the owner's verified expected ID, checks root/junctions
-and writeability, then starts only the demo or an explicit public read-only scan.
-It never formats, migrates or substitutes C:. Existing unrelated data is untouched.
+**Status: Windows and physical drive execution still NOT VERIFIED.** Source-only review and Linux tests do not certify the owner's laptop. The project checkout must be exactly `D:\GrokTradingCouncil` (not `D:\GrokTradingCouncil\repo`). Do not copy credentials or files from earlier trading systems. Do not format, migrate or disconnect the drive while GTC is running.
 
-Inspect `Get-Volume -DriveLetter D | Format-List DriveLetter,FileSystemLabel,UniqueId,HealthStatus`
-on the owner's PC before supplying the expected ID. Do not guess it. Do not weaken
-PowerShell policy automatically if execution is blocked; use the owner's normal
-reviewed local script process. The Windows script has been source-reviewed here,
-not executed. Physical volume identity and durability are still UNVERIFIED.
+## Read-only preflight (owner's laptop)
 
-The Python interpreter and OS may have their own installation/system storage. The
-project-owned files remain under D:. Grok's cloud computer and Codex cloud scratch
-are separate. Neither is a synchronized copy of the physical portable drive.
+```powershell
+Get-Volume -DriveLetter D | Format-List DriveLetter,FileSystemLabel,FileSystem,UniqueId,HealthStatus,SizeRemaining
+Get-Partition -DriveLetter D | Get-Disk | Format-List FriendlyName,SerialNumber,BusType,HealthStatus
+Get-Content D:\GrokTradingCouncil\.project-id
+py -0p
+py -3.12 -c "import sys; print(sys.version); print(sys.executable)"
+git -C D:\GrokTradingCouncil status --short
+git -C D:\GrokTradingCouncil branch --show-current
+git -C D:\GrokTradingCouncil rev-parse HEAD
+```
+
+Confirm the intended portable disk and UniqueId independently. Stop if the expected source or volume identity differs from your reviewed record. The source currently requires an NTFS/ReFS volume and at least 512 MiB available for setup, or 128 MiB for an ordinary start. Those thresholds are launcher preflight floors, not a full capacity estimate.
+
+## Separate setup and fixture start
+
+```powershell
+cd D:\GrokTradingCouncil
+$verifiedUniqueId = Read-Host 'Verified portable D: volume UniqueId'
+.\scripts\launch.ps1 -ExpectedVolumeUniqueId $verifiedUniqueId -Setup
+.\scripts\launch.ps1 -ExpectedVolumeUniqueId $verifiedUniqueId
+```
+
+Setup creates a Python 3.12 virtual environment only when needed, installs pinned developer packages, and checks dependency consistency. Normal start performs verification but **no pip install**. The script fails on mismatched volume, project marker, linked output path, interpreter or dependency versions. It does not automatically change execution policy. Run in a PowerShell console with an approved local script policy.
+
+## Acceptance
+
+Open `http://127.0.0.1:8765` on the same laptop only. The backend must return mode `DEMO`, `live_market_connected=false` and native status `REQUIRED_UNVERIFIED`. Check Overview, Meeting Room, Markets, Positions, Research, Journal and Settings. Use only fictional position actions; never connect real exchange accounts. The existing code intentionally offers no live-order endpoint.
+
+In a second terminal:
+
+```powershell
+cd D:\GrokTradingCouncil
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts\check_setup.py
+$state = Invoke-RestMethod http://127.0.0.1:8765/api/state
+if ($state.mode -ne 'DEMO' -or $state.live_market_connected -ne $false -or
+    $state.native_operations.status -ne 'REQUIRED_UNVERIFIED') {
+    throw 'Unexpected mode. Stop.'
+}
+```
+
+The old Linux test evidence reports 85 passes. Record the actual Windows result; the new source-contract tests do not simulate a real removable-drive failure or a true Windows launcher execution.
+
+## Shutdown and recovery
+
+Press Ctrl+C in the launcher terminal, wait for the prompt, and confirm no listener remains on port 8765:
+
+```powershell
+Get-NetTCPConnection -LocalPort 8765 -State Listen -ErrorAction SilentlyContinue
+Get-ChildItem D:\GrokTradingCouncil\runtime -Filter 'demo.sqlite*'
+```
+
+Do not detach the drive before every GTC process has stopped. Test stop/restart persistence and SQLite consistent backup/restore on disposable fixture copies before declaring the D: deployment durable. Never manually remove SQLite WAL/SHM or overwrite an active ledger.
+
+Python installation, Windows services, browsers, and native Grok cloud bots can use storage outside D:. Project-owned runtime paths, however, must remain within the verified project root. A portable drive is not a substitute for a 24/7 host.
