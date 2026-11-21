@@ -21,49 +21,100 @@ operational trading activation.** The repository is public by the owner's decisi
   The local application uses actual demo ledger records. Reports and prices are
   explicitly fictional. It has no native bot-control or exchange-order endpoint.
 
-## Start on the intended portable D: drive
+## Start on the intended portable D: drive (Windows)
 
-1. Put this fresh branch's checkout at **D:\GrokTradingCouncil**. Do not reuse another
-   project's directory or data. Do not format or migrate the drive.
-2. In PowerShell, inspect `Get-Volume -DriveLetter D | Format-List DriveLetter,FileSystemLabel,UniqueId,HealthStatus`.
-3. Confirm that this is the intended portable volume, then run:
+The **Git checkout itself**, not a \`repo\` subfolder, must be at
+\`D:\GrokTradingCouncil\`. Never move or format unrelated drive content.
 
-```powershell
+First inspect the physical disk and confirm this is your intended portable drive:
+
+\`\`\`powershell
+Get-Volume -DriveLetter D | Format-List DriveLetter,FileSystemLabel,FileSystem,UniqueId,HealthStatus,SizeRemaining
+Get-Partition -DriveLetter D | Get-Disk | Format-List FriendlyName,SerialNumber,BusType
+py -0p
+py -3.12 -c "import sys; print(sys.version)"
+\`\`\`
+
+Verify the disk/UniqueId independently. Do not use a guessed value. In PowerShell
+from the reviewed integrated checkout:
+
+\`\`\`powershell
 cd D:\GrokTradingCouncil
-.\scripts\launch.ps1 -ExpectedVolumeUniqueId '<the verified UniqueId>'
-```
+$expected = Read-Host 'Enter the verified D: volume UniqueId'
+.\scripts\launch.ps1 -ExpectedVolumeUniqueId $expected -Setup
+.\scripts\launch.ps1 -ExpectedVolumeUniqueId $expected
+\`\`\`
 
-The launcher checks the root, volume identity, write access and linked directories;
-it keeps the environment, project temp files, cache and SQLite data under D:.
-It stops rather than falling back to C:. The Python installation and operating-system
-storage are outside this project's storage guarantee. Windows execution and the
-physical volume have **not** been verified from this cloud environment.
+Setup runs **only** with \`-Setup\`; it may create \`.venv\` and install the exact
+versions pinned in \`requirements-dev.lock.txt\`. The pins currently lack
+cryptographic package hashes. Normal startup **does not reinstall packages**.
+If a PowerShell execution policy blocks the script, follow your locally reviewed
+execution-policy process; do not bypass security settings automatically.
+The launcher refuses volume/root/marker mismatches, linked project output paths,
+unhealthy or inadequate storage, missing/bad venv, and incompatible Python.
+It does not change system-wide profile locations. Physical Windows verification
+is still **unperformed**.
 
-Open **http://127.0.0.1:8765** after the launcher prints its ready message. The demo
-clock advances only when you select **Advance demo 1s**. Requesting a close records
-intent first; the next step supplies the fictional quote and exit fill.
+When the fixture server reports
+\`GTC fixture DEMO at http://127.0.0.1:8765; no live/native connection\`,
+open **http://127.0.0.1:8765** locally on that same computer.
+Do not enable the cloud preview or expose port 8765 on a network.
 
-## Linux/cloud development
+### Windows fixture-only acceptance checks
 
-This is separate from the owner's physical D: drive:
+In a **second PowerShell** window:
 
-```sh
+\`\`\`powershell
+cd D:\GrokTradingCouncil
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts\check_setup.py
+$state = Invoke-RestMethod http://127.0.0.1:8765/api/state
+if ($state.mode -ne 'DEMO' -or $state.live_market_connected -ne $false -or
+    $state.native_operations.status -ne 'REQUIRED_UNVERIFIED') {
+    throw 'Unexpected mode or native status: stop the server'
+}
+$state | Select-Object mode,stage,fixture_clock,live_market_connected
+\`\`\`
+
+In the browser verify each screen:
+**Overview, Meeting Room, Markets, Positions, Research, Journal, Settings**.
+They must show fictional fixtures and blocked native/operational activation.
+The demo clock advances only by clicking **Advance demo 1s**. Requesting a
+fictional position close records intent; the next demo step supplies the exit
+quote and fill. Inspect the journal/ledger after this action.
+Save actual command exit codes and screenshots; the prior 85-test Linux run
+and static UI checks do not establish Windows operation.
+
+For orderly shutdown, press **Ctrl+C** in the launcher's PowerShell window.
+Wait for the command prompt to return and check that no service is listening:
+
+\`\`\`powershell
+Get-NetTCPConnection -LocalPort 8765 -State Listen -ErrorAction SilentlyContinue
+Get-ChildItem D:\GrokTradingCouncil\runtime -Filter 'demo.sqlite*'
+\`\`\`
+
+Do not detach D: while any fixture process is running. Never manually delete
+SQLite WAL or SHM files. Confirm stop/restart persistence and backup integrity
+before calling the portable-drive runtime ready.
+
+## Linux/cloud development (NOT Windows verification)
+
+\`\`\`sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.lock.txt
 .venv/bin/python -m pytest -q
 .venv/bin/python scripts/run.py --demo
-```
+\`\`\`
 
-`python scripts/collect_public.py` makes one public read-only discovery request and
-stores immutable raw bytes under `runtime/public_readonly/`. It never sends data
-into the demo ledger. The observed request from this cloud returned HTML “Site
-Unavailable”; the collector blocked it. Successful live collection is not claimed.
+\`python scripts/collect_public.py\` makes one optional public read-only discovery
+request and stores raw provenance under \`runtime/public_readonly/\`. It never
+feeds the demo ledger. The observed cloud request returned HTML "Site Unavailable";
+successful live collection is not claimed.
 
-`python scripts/monitor_demo.py --quotes <fictional-quote-map.json>` runs the
-independent demo monitor. It uses actual UTC, so a frozen fixture's old timestamps
-will correctly become stale. This is a development command, not a durable host or
-24/7 readiness claim. `python scripts/backup_demo.py` makes an integrity-checked
-SQLite backup. Never replace an active ledger with a backup while the app runs.
+\`python scripts/monitor_demo.py --quotes <fictional-quote-map.json>\` runs the
+independent demo monitor with actual UTC quote timestamps. It is not a durable
+24/7 service. \`python scripts/backup_demo.py\` creates an integrity-checked
+SQLite backup. Never replace an active ledger with a backup.
 
 ## Review map
 
@@ -75,27 +126,22 @@ SQLite backup. Never replace an active ledger with a backup while the app runs.
 - [Report/import contract](docs/REPORT_CONTRACT.md)
 - [Requirements matrix](docs/requirements_matrix.csv)
 - [Verification report](evidence/verification.md)
+- [Local Windows storage policy](docs/LOCAL_STORAGE_POLICY.md)
 - [Source inventory and PDF hash differences](spec/SOURCE_INDEX.json)
 - [Master instructions](spec/originals/Grok_Trading_Council_Master_Build_Instructions.txt) and [full 46-page text](spec/text/project_v2.txt)
 
-The four original PDFs contain all 46 pages, including the seven screen concepts.
-Their large binary upload did not complete. They remain in the verified local
-checkpoint; this branch includes full extracted text, master instructions and
-dashboard screenshots. It does not claim the original PDFs are uploaded.
-Their extracted page text matches the available combined v2 document. Parts 1 and
-4 differ in binary hash from Grok's earlier reported hashes; the inventory records
-this explicitly. The supplied v7 ZIP hash was verified. Its incompatible scripts
-are retained byte-for-byte as non-executable reference text in `evidence/upstream_v7/`.
-The canonical implementation is under `services/`; do not import those old variants.
+The four source PDFs contain 46 pages, but their large binary GitHub upload
+did not complete. The integrated branch includes extracted text, master
+instructions and screenshots; it does not claim the PDFs are in GitHub.
+Parts 1 and 4 differ in binary hash from Grok's earlier reported hashes.
+Archived v7 scripts are non-executable references in \`evidence/upstream_v7/\`;
+do not import their incompatible implementations.
 
-## Collaboration
+## Collaboration and operational boundary
 
 [Issue #1](https://github.com/samirpatel-ariaBOT/grok-trading-council/issues/1)
-continues engineering coordination. Grok's draft PR #2 is preserved. Codex's
-integrated foundation is a separate branch. A GitHub notification is not proof
-that Grok woke, read it, or configured a native routine. No automatic merge.
-
-Schema 3.0 is implemented and locally tested but still awaiting Grok's independent
-integration review. Operational family/directions, financial policy, usage allowance,
-native scheduling, durable runtime and forward evaluation are unresolved gates.
-The demo's example limits are fictional test inputs, not accepted operating policy.
+coordinates review. PR #2 remains preserved and this integrated PR remains
+separate. GitHub notifications do not prove native bot activation.
+Schema 3.0, operational instrument scope, risk policy, usage allowance, native
+24/7 execution, forward evaluation and durable host remain unresolved.
+The fixture demo's example limits are not approved financial policy.
