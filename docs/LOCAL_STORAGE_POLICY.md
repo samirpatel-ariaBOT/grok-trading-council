@@ -1,83 +1,46 @@
 # Local Windows storage requirement
 
 Decision ID: DEC-LOCAL-D-001
-Authority: current explicit owner request to use the portable D: drive whenever
-this new project runs or stores project files locally.
-Status: REQUIREMENT RECORDED. No Windows setup or drive verification has run.
+Authority: Owner's explicit requirement to keep all project-controlled local storage on the verified portable D: volume.
+Status: SOURCE HARDENED; PHYSICAL WINDOWS EXECUTION UNVERIFIED.
 
-## Location and fresh setup
+## Canonical checkout and storage
 
-Use `D:\GrokTradingCouncil` as the proposed new project root. Both Grok's backend
-and Codex's dashboard must use this location in future Windows setup instructions,
-launchers and application configuration. Keep the remote GitHub repository as the
-shared source repository. Do not import any previous trading project or settings.
+The integrated branch expects the Git checkout itself at **D:\GrokTradingCouncil**.
+The earlier proposed \`D:\GrokTradingCouncil\repo\` subfolder is **not** the live launcher layout; do not move files there.
 
-Proposed layout (paths are requirements, not directories already created):
-
-| Directory under the root | Purpose |
+| Location | Responsibility |
 | --- | --- |
-| `repo` | Fresh Git checkout, source, tests, docs and dashboard assets |
-| `runtime` | Machine-specific virtual environments and local runtime tools |
-| `data` | Market snapshots, paper databases, SQLite WAL/SHM and checkpoints |
-| `logs` | Application, worker and launcher logs |
-| `artifacts` | Reports, exported evidence, research outputs and builds |
-| `cache` | Project-controlled package, tool and application caches |
-| `tmp` | Project-controlled temporary files and staging |
-| `backups` | Local recovery copies, clearly distinguished from off-drive backups |
+| \`D:\GrokTradingCouncil\.project-id\` | Fixed identity marker: \`gtc-fresh-20261102\` |
+| \`D:\GrokTradingCouncil\scripts\, services\, apps\, tests\, config\, README.md\` | Git-tracked source and dashboard |
+| \`D:\GrokTradingCouncil\.venv\` | Isolated, machine-specific Python 3.12 environment (ignored by Git) |
+| \`D:\GrokTradingCouncil\runtime\demo.sqlite\` | Fixture-only SQLite demo ledger; WAL and SHM in same directory |
+| \`runtime\tmp\, runtime\pip-cache\, runtime\pycache\` | Project-controlled temporary and cache data |
+| \`runtime\backups\` | Local consistent SQLite backups (NOT protection against whole-drive loss) |
+| \`runtime\public_readonly\` | Explicit read-only public collection; not part of demo ledger |
 
-Exclude runtime state, secrets, caches, databases and backups from the public Git
-repository. Git stores source and approved non-sensitive fixtures. Local copies
-on this drive are not protection against loss of the whole drive.
+Future logs, artifacts, and market data must remain inside the same verified project root. Do not introduce parallel project paths or reuse old trading systems. Runtime data, secrets and caches must remain excluded from the public repository.
 
-## Required setup and startup behavior
+## Startup and setup requirements
 
-1. Before creating project files, verify that D: is the owner's intended portable
-   volume, writable, has sufficient space and supports the required filesystem
-   operations. Record a stable volume identity and a project-root marker; the
-   drive letter alone is insufficient. Do not format or migrate the drive.
-2. Check the volume identity and root marker on each startup. If the drive is
-   absent, read-only, full, mounted elsewhere or replaced, stop with a clear error.
-   Never silently write the project to C:, the current working directory or a
-   different disk. A letter change needs an explicit configuration update.
-3. Resolve all project-controlled paths from one configured root. Refuse path
-   traversal or junction/symlink redirection outside the verified project volume.
-   Set project processes' temporary and cache paths under the root; do not change
-   system-wide HOME, user profile or other unrelated environment settings.
-4. Keep virtual environments, dependencies and frontend build outputs on D:.
-   Rebuild machine-specific environments from dependency locks when moving to a
-   different computer; do not promise that copied environments are executable.
-5. Keep SQLite on a verified local filesystem. Test transactions, locking,
-   checkpointing, crash recovery and consistent backups on the actual target
-   drive before a paper ledger is enabled. Do not copy a live database alone as
-   a guaranteed consistent backup.
-6. On write failure, loss of the drive or loss of data freshness, stop admission
-   of new paper actions and show an unhealthy state. Recovery must reconcile
-   persisted state before restart; no alternate-disk fallback or invented fills.
-   A removable drive does not itself provide durable 24/7 runtime.
-7. Display the active runtime host, configured root, last successful persistence
-   and storage health in operational status. The dashboard must not say that
-   native Grok cloud bots are running on D: unless that has actually been proven.
+1. Independently inspect \`Get-Volume -DriveLetter D\` and \`Get-Partition -DriveLetter D | Get-Disk\` to verify the physical intended volume. Record its actual \`UniqueId\` out of band. Do not guess a volume ID.
+2. Use \`scripts\launch.ps1 -ExpectedVolumeUniqueId '<verified ID>' -Setup\` to create/check the isolated Python 3.12 environment and install the versions in \`requirements-dev.lock.txt\`. This is a deliberate one-time dependency setup, not a normal application start. Package pins are not yet accompanied by cryptographic hashes.
+3. Launch the existing **fixture-only** server with \`scripts\launch.ps1 -ExpectedVolumeUniqueId '<verified ID>'\`. Startup does not reinstall packages. \`-CollectPublic\` is optional, read-only network collection and must never be confused with the demo. It is not required for local demo acceptance.
+4. The launcher rejects an incorrect/missing volume ID, wrong root/marker, unhealthy or non-NTFS/ReFS volume, insufficient free capacity, linked/reparse project output paths, wrong Python interpreter, and mismatched or unhealthy dependencies before starting the demo. It checks the path components it controls, but Windows volume identity and all OS behavior need physical testing.
+5. The launcher chooses the same exact root for services and dashboard, and retains \`TEMP\`, \`TMP\`, \`PIP_CACHE_DIR\`, \`PYTHONPYCACHEPREFIX\`, and \`PYTHONNOUSERSITE\` only for its child processes. It does not change system-wide profiles or Windows directories. Host OS, browsers, and Python installation may still use C:.
+6. Rebuild the environment with explicit owner review when moving between PCs. Do not copy a venv and assume it will work. Do not delete any existing environment without approval.
+7. SQLite is for the fictional demo, on a locally mounted NTFS/ReFS volume only. Confirm transaction locking, persistence, backup/restore, restart recovery and healthy fail-closed behavior using **disposable fixture data** before claiming Windows durability.
+8. On a missing, replaced, full, read-only or disconnected volume, do not redirect to C: or create an alternative ledger. Stop the fixture service and inspect/reconcile state before restarting.
+
+## Practical acceptance evidence still required
+
+- Run first-time setup, ordinary launcher startup, 85+ existing Python tests (actual Windows result recorded), and browse all seven dashboard screens on the intended laptop.
+- Confirm a normal stop and restart preserves fixture events. Make a consistent backup using the existing backup script only after verifying its scope.
+- Negative startup tests: wrong UniqueId, missing marker, wrong interpreter, incomplete venv, redirect/junction and insufficient space. Use isolated test conditions; never damage or disconnect an active volume to simulate a failure.
+- Document host identity, path, Windows and Python versions, Volume UniqueId, dependency output, storage health, and any observed startup error.
+- Explicitly distinguish source-level validation from a physical drive / removable-drive loss / Windows durability test.
 
 ## Boundaries
 
-This policy covers project-owned files and controlled processes. Windows, installed
-browsers, antivirus and other host software can still create system-managed files
-on C:. Do not claim that every operating-system write has been relocated.
-
-Native Grok bots use their provider's runtime. Choosing D: for a future Windows
-backend/dashboard does not move Grok's cloud computers onto the user's drive or
-verify a local-to-cloud bridge. A computer that sleeps, disconnects or loses its
-drive cannot supply continuous local monitoring. Hosting and continuity remain
-separate decisions; no paid services are authorized by this storage request.
-
-## Required acceptance evidence before local runtime is called ready
-
-- Normal startup stores all project-controlled outputs within the verified root.
-- Missing, replaced, read-only and full-drive cases fail without C: fallback.
-- Cross-volume paths and redirected directories are rejected before writes.
-- Unplug/reconnect and restart tests on disposable paper fixtures preserve a
-  truthful health state and reconcile the ledger; no tests use real orders.
-- A consistent backup restores on the intended Windows environment.
-- Backend and dashboard configuration agree on the same root and host identity.
-
-These are future implementation requirements. None is marked tested by this file.
+No exchange keys, live orders, paid APIs, hosting activation or live brokerage connection are authorized.
+The native Grok bots run in provider infrastructure; putting project files on D: does not migrate cloud bots to the portable drive or establish 24/7 unattended operation. A PC that sleeps or loses its portable drive is not a durable service host.
